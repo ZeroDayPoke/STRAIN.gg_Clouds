@@ -1,4 +1,4 @@
-from models.engine.dbstorage import DBStorage
+from .engine.dbstorage import DBStorage
 
 storage = DBStorage()
 class_dictionary = storage.class_dictionary
