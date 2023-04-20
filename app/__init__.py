@@ -1,0 +1,18 @@
+from flask import Flask
+from flask_login import LoginManager, current_user
+from .models import storage, user
+
+app = Flask(__name__)
+app.secret_key = 'supersecretkey'
+
+# Configure Login Manager
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+@login_manager.user_loader
+def load_user(user_id):
+    return storage.get(user.User, user_id)
+
+@app.context_processor
+def inject_current_user():
+    return dict(current_user=current_user)

@@ -1,8 +1,7 @@
 #!/usr/bin/python3
 """Routes for the app"""
 from flask import Blueprint, jsonify, request
-from models import storage
-from models.strain import Strain
+from ..models import storage, strain, user
 
 # Blueprint for the app
 app_routes = Blueprint('app_routes', __name__)

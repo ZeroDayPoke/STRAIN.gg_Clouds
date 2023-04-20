@@ -4,7 +4,7 @@ import os
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
-from models import user, strain, base
+from app.models import user, strain, base
 
 class DBStorage:
     __engine = None

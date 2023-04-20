@@ -2,7 +2,7 @@
 """User Model"""
 
 # Import necessary modules
-from models.base import BaseModel, Base
+from .base import BaseModel, Base
 from sqlalchemy import Column, Integer, String, Table, ForeignKey
 from sqlalchemy.orm import relationship
 import hashlib
