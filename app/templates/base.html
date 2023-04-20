@@ -19,7 +19,7 @@
 		<title>{% block title %}STRAIN.gg{% endblock %}</title>
 	</head>
 	<body>
-        <header>
+		<header>
 			<nav class="navbar navbar-expand-lg navbar-light bg-light">
 				<a class="navbar-brand" href="#">STRAIN.gg</a>
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,16 +55,15 @@
 				</div>
 			</nav>
 		</header>
-		
-
-		<div class="container">
-			{% block content %}
-			{% endblock %}
-		</div>
-
-		<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-		<script src="{{ url_for('static', filename='lib/jquery.min.js') }}"></script>
-		<script src="{{ url_for('static', filename='lib/popper.min.js') }}"></script>
-		<script src="{{ url_for('static', filename='lib/bootstrap.min.js') }}"></script>
+		<main role="main" class="container">
+			{% for message in get_flashed_messages() %}
+				<div class="alert alert-danger">{{ message }}</div>
+			{% endfor %}
+			{% block content %}{% endblock %}
+			<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+			<script src="{{ url_for('static', filename='lib/jquery.min.js') }}"></script>
+			<script src="{{ url_for('static', filename='lib/popper.min.js') }}"></script>
+			<script src="{{ url_for('static', filename='lib/bootstrap.min.js') }}"></script>
+		</main>
 	</body>
 </html>

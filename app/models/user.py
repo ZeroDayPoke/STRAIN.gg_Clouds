@@ -5,7 +5,7 @@
 from .base import BaseModel, Base
 from sqlalchemy import Column, Integer, String, Table, ForeignKey
 from sqlalchemy.orm import relationship
-import hashlib
+from werkzeug.security import generate_password_hash
 
 # Create the association table for users and their favorite strains
 user_strain_association = Table(
@@ -37,7 +37,12 @@ class User(BaseModel):
 
     def __set_password(self, pwd):
         """encrypts password"""
-        secure = hashlib.md5()
-        secure.update(pwd.encode("utf-8"))
-        secure_password = secure.hexdigest()
+        secure_password = generate_password_hash(pwd)
         setattr(self, "password", secure_password)
+
+    @property
+    def is_active(self):
+        return True
+
+    def get_id(self):
+        return str(self.id)
