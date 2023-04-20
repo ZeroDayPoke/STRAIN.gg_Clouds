@@ -19,6 +19,7 @@ template_dir = os.path.join(current_dir, 'templates')
 
 # Initialize Flask app
 app = Flask(__name__, template_folder=template_dir)
+app.secret_key = 'supersecretkey'
 app.config.from_object(config[os.environ.get('FLASK_ENV', 'default')])
 
 # Register blueprints and apply CORS
