@@ -47,6 +47,7 @@ def not_found_test():
 
 @web_routes.route('/signup', methods=['GET', 'POST'], strict_slashes=False)
 def signup():
+    print(request.method)
     if request.method == 'POST':
         # Get the user information from the form
         username = request.form.get('username')
@@ -55,14 +56,16 @@ def signup():
 
         # Check if a user with the same username already exists
         all_users = storage.all(user.User).values()
-        existing_user = sorted(all_users, key=lambda u: u.username)
+        print(all_users)
+        existing_user = next((u for u in all_users if u.username == username), None)
+        print(existing_user)
         if existing_user:
             flash('Username already exists. Please choose a different username.')
             return redirect(url_for('web_routes.signup'))
 
         # Instantiate a new User object
         new_user = user.User(username=username, email=email, password=password)
-        
+
         # Save the new user to the database
         storage.new(new_user)
         storage.save()
