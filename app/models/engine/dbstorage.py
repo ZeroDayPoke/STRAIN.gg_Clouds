@@ -4,8 +4,7 @@ import os
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
-from models.base import Base
-from models.strain import Strain
+from models import user, strain, base
 
 class DBStorage:
     __engine = None
@@ -13,7 +12,8 @@ class DBStorage:
 
     # Dictionary to map class names to their respective model classes
     class_dictionary = {
-        'Strain': Strain,
+        'Strain': strain.Strain,
+        'User': user.User
     }
 
     def __init__(self):
@@ -30,7 +30,7 @@ class DBStorage:
 
     def reload(self):
         """Create all tables in the database and set up the session."""
-        Base.metadata.create_all(self.__engine)
+        base.Base.metadata.create_all(self.__engine)
         the_session = sessionmaker(bind=self.__engine, expire_on_commit=False)
         Session = scoped_session(the_session)
         self.__session = Session()
