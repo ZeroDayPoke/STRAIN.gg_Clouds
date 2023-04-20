@@ -2,7 +2,7 @@
 """web views"""
 
 # Import the Flask Blueprint class
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, abort
 from models import storage
 
 # Create a blueprint for the web views
@@ -20,3 +20,8 @@ def strains():
 def index():
     """Return index page"""
     return render_template('index.html')
+
+@web_routes.route('/404_test', methods=['GET'], strict_slashes=False)
+def not_found_test():
+    """Return 404 page test"""
+    abort(404)
