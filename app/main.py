@@ -6,6 +6,7 @@ from models import storage
 from app.routes import web_routes, api_routes
 from flask import Flask, render_template
 from flask_cors import CORS
+from app.config import config
 
 # Set up template and static folders
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -13,6 +14,7 @@ template_dir = os.path.join(current_dir, 'templates')
 
 # Initialize Flask app
 app = Flask(__name__, template_folder=template_dir)
+app.config.from_object(config[os.environ.get('FLASK_ENV', 'default')])
 
 # Register blueprints and apply CORS
 app.register_blueprint(web_routes)
