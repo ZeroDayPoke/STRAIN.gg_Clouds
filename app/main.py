@@ -1,12 +1,17 @@
 #!/usr/bin/python3
 """ Flask Application """
 
+import sys
 import os
+# Add current directory to path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__))))
+
+# Import modules
 from models import storage
-from app.routes import web_routes, api_routes
+from routes import web_routes, app_routes
 from flask import Flask, render_template
 from flask_cors import CORS
-from app.config import config
+from config import config
 
 # Set up template and static folders
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -18,7 +23,7 @@ app.config.from_object(config[os.environ.get('FLASK_ENV', 'default')])
 
 # Register blueprints and apply CORS
 app.register_blueprint(web_routes)
-app.register_blueprint(api_routes)
+app.register_blueprint(app_routes)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 # Close storage on app teardown
@@ -26,6 +31,11 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 def close_db(error):
     """ Close Storage """
     storage.close()
+
+# Handle 404 errors
+@app.errorhandler(404)
+def not_found(error):
+    return render_template('404.html'), 404
 
 # Run the Flask app
 if __name__ == "__main__":

@@ -5,10 +5,10 @@ from models import storage
 from models.strain import Strain
 
 # Blueprint for the app
-api_routes = Blueprint('api_routes', __name__)
+app_routes = Blueprint('app_routes', __name__)
 
 """Strain routes"""
-@api_routes.route('/api/strains', methods=['GET'], strict_slashes=False)
+@app_routes.route('/app/strains', methods=['GET'], strict_slashes=False)
 def get_strains():
     strains = storage.all('Strain')
     return jsonify([strain.to_dict() for strain in strains.values()])
