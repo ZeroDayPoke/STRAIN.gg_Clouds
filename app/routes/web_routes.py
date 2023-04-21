@@ -8,7 +8,7 @@ from werkzeug.security import check_password_hash
 from ..models import storage, user, strain
 
 # Create a blueprint for the web views
-web_routes = Blueprint('web_routes', __name__)
+web_routes = Blueprint('web_routes', __name__, url_prefix='/clouds')
 
 
 # Create a login manager instance
@@ -39,19 +39,13 @@ def index():
     return render_template('index.html')
 
 
-@web_routes.route('/clouds/', methods=['GET'], strict_slashes=False)
-def clouds():
-    """Return index page"""
-    return render_template('index.html')
-
-
 @web_routes.route('/404_test', methods=['GET'], strict_slashes=False)
 def not_found_test():
     """Return 404 page test"""
     abort(404)
 
 
-@web_routes.route('/clouds/signup', methods=['GET', 'POST'], strict_slashes=False)
+@web_routes.route('/signup', methods=['GET', 'POST'], strict_slashes=False)
 def signup():
     if request.method == 'POST':
         # Get the user information from the form
