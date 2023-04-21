@@ -1,44 +1,41 @@
 #!/bin/bash
 
-# Update package list and install nginx
-sudo apt-get update
-sudo apt-get install -y nginx
+sudo apt update
+sudo apt install -y nginx
 
-# Create a new nginx configuration file for strain.gg
-cat > strain.gg <<EOL
+# Remove the default configuration
+sudo rm -f /etc/nginx/sites-enabled/default
+
+# Create a new Nginx configuration file
+sudo bash -c "cat > /etc/nginx/sites-available/strain.gg << EOL
 server {
     listen 80;
     server_name strain.gg www.strain.gg;
 
     location / {
-        return 301 /clouds/;
+        return 301 \$scheme://\$host/clouds/;
     }
 
     location /clouds/ {
-        alias /var/www/strain.gg/static;
-        try_files \$uri @strain_gg_clouds;
-    }
-
-    location @strain_gg_clouds {
         proxy_pass http://127.0.0.1:5050;
-        proxy_set_header Host \$http_host;
+        proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto \$scheme;
+    }
+
+    location /static/ {
+        alias /var/www/strain.gg/app/static;
+        expires 30d;
+        autoindex off;
     }
 }
-EOL
+EOL"
 
-# Remove existing symbolic link and configuration file
-sudo rm -f /etc/nginx/sites-enabled/strain.gg
-sudo rm -f /etc/nginx/sites-available/strain.gg
+# Create a symbolic link to enable the new site configuration
+sudo ln -sf /etc/nginx/sites-available/strain.gg /etc/nginx/sites-enabled/
 
-# Create a new symbolic link in the sites-enabled directory
-sudo mv strain.gg /etc/nginx/sites-available/
-sudo ln -s /etc/nginx/sites-available/strain.gg /etc/nginx/sites-enabled/
-
-# Test nginx configuration
+# Test the Nginx configuration
 sudo nginx -t
 
-# Reload nginx service
+# Reload the Nginx service to apply the new configuration
 sudo systemctl reload nginx
