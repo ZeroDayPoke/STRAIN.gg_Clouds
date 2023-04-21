@@ -8,7 +8,7 @@ from werkzeug.security import check_password_hash
 from ..models import storage, user, strain
 
 # Create a blueprint for the web views
-web_routes = Blueprint('web_routes', __name__)
+web_routes = Blueprint('web_routes', __name__, url_prefix='/clouds')
 
 
 # Create a login manager instance

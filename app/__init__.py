@@ -4,7 +4,7 @@ from flask_login import LoginManager, current_user
 from .models import storage, user
 from .config import config
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="static")
 app.secret_key = 'supersecretkey'
 app.config.from_object(config[os.environ.get('FLASK_ENV', 'default')])
 

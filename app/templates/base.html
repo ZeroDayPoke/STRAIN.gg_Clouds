@@ -12,11 +12,14 @@
 		<meta name="description" content="STRAIN.gg - A free and public platform to explore, filter, and sort strains of cannabis based on parameters like concentration, terpene profiles, effects, and more.">
 
 		<!-- FavIco -->
-		<link rel="icon" type="image/png" href="../static/images/favicon.ico">
+		<link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.ico') }}">
 
 		<!-- Bootstrap CSS -->
 		<link href="{{ url_for('static', filename='lib/bootstrap.min.css') }}" rel="stylesheet">
 		<title>{% block title %}STRAIN.gg{% endblock %}</title>
+
+		<!-- Richard CSS -->
+		<link href="{{ url_for('static', filename='styles/richard.css') }}" rel="stylesheet">
 	</head>
 	<body>
 		<header>
@@ -24,32 +27,31 @@
 				<a class="navbar-brand" href="#">STRAIN.gg</a>
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
-				</button>
-		
+				</button>	
 				<div class="collapse navbar-collapse" id="navbarSupportedContent">
 					<ul class="navbar-nav mr-auto">
 						<li class="nav-item">
-							<a class="nav-link" href="/">Home</a>
+							<a class="nav-link" href="/clouds/">Home</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="/about">About</a>
+							<a class="nav-link" href="/clouds/about">About</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="/contact">Contact</a>
+							<a class="nav-link" href="/clouds/contact">Contact</a>
 						</li>
 					</ul>
-					<ul class="navbar-nav">
+					<ul class="navbar-nav nav-account">
 						{% if not current_user.is_authenticated %}
-							<li class="nav-item">
-								<a class="nav-link" href="/signup">Sign Up</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" href="/signin">Sign In</a>
-							</li>
+						  <li class="nav-item">
+							<a class="nav-link" href="/clouds/signup">Sign Up</a>
+						  </li>
+						  <li class="nav-item">
+							<a class="nav-link" href="/clouds/signin">Sign In</a>
+						  </li>
 						{% else %}
-							<li class="nav-item">
-								<a class="nav-link" href="/signout">Sign Out</a>
-							</li>
+						  <li class="nav-item">
+							<a class="nav-link" href="/clouds/signout">Sign Out</a>
+						  </li>
 						{% endif %}
 					</ul>
 				</div>

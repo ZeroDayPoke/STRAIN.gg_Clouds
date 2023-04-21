@@ -1,0 +1,11 @@
+.nav-account {
+    margin-left: auto;
+  }
+  .nav-account .nav-link {
+    padding: 5px 15px;
+    margin: 0 5px;
+    border-radius: 5px;
+  }
+  .nav-account .nav-link:hover {
+    background-color: #f8f9fa;
+  }
