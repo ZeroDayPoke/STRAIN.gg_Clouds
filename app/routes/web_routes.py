@@ -33,7 +33,7 @@ def strains():
     return render_template('base.html', strains=all_strains)
 
 
-@web_routes.route('/clouds/', methods=['GET'], strict_slashes=False)
+@web_routes.route('/', methods=['GET'], strict_slashes=False)
 def index():
     """Return index page"""
     return render_template('index.html')
