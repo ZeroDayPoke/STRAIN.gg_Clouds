@@ -14,9 +14,11 @@ web_routes = Blueprint('web_routes', __name__, url_prefix='/clouds')
 # Create a login manager instance
 login_manager = LoginManager()
 
+
 # Initialize the login manager with the app
 def init_app(app):
     login_manager.init_app(app)
+
 
 # Load the user from the user_id stored in the session
 @login_manager.user_loader
@@ -91,6 +93,7 @@ def signin():
             flash('Invalid username or password.')
 
     return render_template('signin.html')
+
 
 @web_routes.route('/signout', methods=['GET'], strict_slashes=False)
 @login_required
