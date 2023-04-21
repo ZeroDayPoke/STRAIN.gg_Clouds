@@ -5,7 +5,7 @@ sudo apt-get update
 sudo apt-get install -y nginx
 
 # Create Nginx configuration file for your application
-sudo bash -c "cat > /etc/nginx/sites-available/strain-gg-clouds << EOL
+sudo bash -c "cat > /etc/nginx/sites-available/strain.gg << EOL
 server {
     listen 80;
     server_name strain.gg www.strain.gg;
@@ -25,7 +25,7 @@ server {
 EOL"
 
 # Create a symbolic link to enable the configuration
-sudo ln -s /etc/nginx/sites-available/strain-gg-clouds /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/strain.gg /etc/nginx/sites-enabled/
 
 # Test the Nginx configuration
 sudo nginx -t
