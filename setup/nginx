@@ -1,10 +1,14 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 sudo apt update
 sudo apt install -y nginx
 
 # Remove the default configuration
 sudo rm -f /etc/nginx/sites-enabled/default
+
+# Remove the old Nginx configuration files
+sudo rm -r /etc/nginx/sites-available/strain.gg
+sudo rm -r /etc/nginx/sites-enabled/strain.gg
 
 # Create a new Nginx configuration file
 sudo bash -c "cat > /etc/nginx/sites-available/strain.gg << 'EOL'
