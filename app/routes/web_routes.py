@@ -51,7 +51,7 @@ def not_found_test():
     abort(404)
 
 
-@web_routes.route('/signup', methods=['GET', 'POST'], strict_slashes=False)
+@web_routes.route('clouds/signup', methods=['GET', 'POST'], strict_slashes=False)
 def signup():
     if request.method == 'POST':
         # Get the user information from the form
