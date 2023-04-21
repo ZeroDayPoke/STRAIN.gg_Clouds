@@ -24,7 +24,9 @@
 	<body>
 		<header>
 			<nav class="navbar navbar-expand-lg navbar-light bg-light">
-				<a class="navbar-brand" href="#">STRAIN.gg</a>
+				<a class="navbar-brand" href="#">
+					<img src="{{ url_for('static', filename='images/header.png') }}" alt="Logo" width="auto" height="30">
+				</a>
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
 				</button>	
@@ -66,6 +68,8 @@
 			<script src="{{ url_for('static', filename='lib/jquery.min.js') }}"></script>
 			<script src="{{ url_for('static', filename='lib/popper.min.js') }}"></script>
 			<script src="{{ url_for('static', filename='lib/bootstrap.min.js') }}"></script>
+			<script src="{{ url_for('static', filename='scripts/richard.js') }}"></script>
+			{% block display %}STRAIN.gg{% endblock %}
 		</main>
 	</body>
 </html>

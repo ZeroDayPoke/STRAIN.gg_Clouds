@@ -32,7 +32,7 @@ def strains():
     """Return strains page"""
     all_strains = storage.all('Strain').values()
     # Process the strains data as needed, e.g. sorting or filtering
-    return render_template('base.html', strains=all_strains)
+    return render_template('strains.html', strains=all_strains)
 
 
 @web_routes.route('/', methods=['GET'], strict_slashes=False)
