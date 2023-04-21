@@ -1,52 +1,192 @@
-document.addEventListener("DOMContentLoaded", () => {
-  
-  getReviewsBtn.addEventListener("click", async () => {
-    await getStrains();
-  });
+let strainsData = [];
 
-  // Fetch reviews data from the API
-  async function getStrains() {
-    try {
-      const response = await fetch("clouds/strains");
-      const strains = await response.json();
-      displayStrains(strains);
-    } catch (error) {
-      console.error("Error fetching strains:", error);
-    }
+// Fetch all strains
+async function fetchStrains() {
+  try {
+    const response = await fetch('/clouds/api/strains');
+    const data = await response.json();
+    strainsData = data;
+    renderStrains();
+  } catch (error) {
+    console.error('Error fetching strains:', error);
   }
+}
 
-  // Display reviews on the page
-  function displayStrains(strains) {
-    renderStrains(strains);
-  }
+// Function to render the strains list
+function renderStrains() {
+  const strainsTableBody = document.querySelector('#strainsTableBody');
+  strainsTableBody.innerHTML = strainsData
+    .map((strain) => `
+      <tr>
+        <td>${strain.name}</td>
+        <td>${strain.delta_nine_concentration}</td>
+        <td>${strain.target_symptom}</td>
+        <td>
+          <!-- Add buttons for update and delete actions -->
+          <button class="btn btn-sm btn-warning" onclick="openUpdateStrainModal(${strain.id})">Edit</button>
+          <button class="btn btn-sm btn-danger" onclick="openDeleteStrainModal(${strain.id})">Delete</button>
+        </td>
+      </tr>`)
+    .join('');
+}
 
-  function renderStrains(strains) {
-    const strainsContainer = document.querySelector('.strains');
-    strainsContainer.innerHTML = '';
-  
-    if (strains.length === 0) {
-      strainsContainer.innerHTML = '<p>No strains found.</p>';
-      return;
-    }
-  
-    strains.forEach(strain => {
-      const strainCard = `
-        <div class="card mb-3" data-id="${strain.id}">
-          <div class="card-body">
-            <h5 class="card-title">Strain ID: ${strain.id}</h5>
-            <p class="card-text">
-              <strong>Name:</strong> ${strain.name}<br>
-              <strong>Concentration:</strong> ${strain.delta_nine_concentration}<br>
-              <strong>Target:</strong> ${strain.target_symptom}<br>
-            </p>
-            <button class="btn btn-primary updateReview" data-review-id="${strain.id}" data-bs-toggle="modal" data-bs-target="#updateReviewModal">Update</button>
-            <button class="btn btn-danger deleteReview" data-review-id="${strain.id}" data-bs-toggle="modal" data-bs-target="#deleteReviewModal">Delete</button>
-          </div>
-        </div>
-      `;
-      strainsContainer.innerHTML += strainCard;
+// Function to handle the form submission
+async function submitCreateStrain(event) {
+  event.preventDefault();
+
+  const name = document.querySelector('#name').value;
+  const delta_nine_concentration = document.querySelector('#delta_nine_concentration').value;
+  const target_symptom = document.querySelector('#target_symptom').value;
+
+  try {
+    // Replace this URL with the correct API endpoint to create a strain
+    const response = await fetch('/clouds/api/strains', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name,
+        delta_nine_concentration,
+        target_symptom,
+      }),
     });
+
+    const data = await response.json();
+
+    if (data.success) {
+      // Update the strains data and re-render the strains list
+      strainsData.push(data.strain);
+      renderStrains();
   
-    addUpdateDeleteListeners();
+      // Close the modal and clear the form inputs
+      const createStrainModal = new bootstrap.Modal(document.getElementById('createStrainModal'));
+      createStrainModal.hide();
+      document.querySelector('#createStrainForm').reset();
+    } else {
+      alert('Error creating strain: ' + data.message);
+    }
+  } catch (error) {
+    console.error('Error creating strain:', error);
   }
+}
+
+// Function to set up the event listener for the form submission
+function setupCreateStrainForm() {
+  const createStrainForm = document.querySelector('#createStrainForm');
+  createStrainForm.addEventListener('submit', submitCreateStrain);
+}
+
+// Update strain
+async function submitUpdateStrain(event) {
+  event.preventDefault();
+
+  // Get the strain ID and data from the form
+  const strainId = document.querySelector('#modal_strain_id').value;
+  const name = document.querySelector('#update_name').value;
+  const delta_nine_concentration = document.querySelector('#update_delta_nine_concentration').value;
+  const target_symptom = document.querySelector('#update_target_symptom').value;
+
+  try {
+    const response = await fetch(`/clouds/api/strains/${strainId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name,
+        delta_nine_concentration,
+        target_symptom,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      // Update the strains data and re-render the strains list
+      const strainIndex = strainsData.findIndex((strain) => strain.id === strainId);
+      strainsData[strainIndex] = data.strain;
+      renderStrains();
+
+      // Close the modal and clear the form inputs
+      document.querySelector('#updateStrainModal').modal('hide');
+      document.querySelector('#updateStrainForm').reset();
+    } else {
+      alert('Error updating strain: ' + data.message);
+    }
+  } catch (error) {
+    console.error('Error updating strain:', error);
+  }
+}
+
+function setupUpdateStrainForm() {
+  const updateStrainForm = document.querySelector('#updateStrainForm');
+  updateStrainForm.addEventListener('submit', submitUpdateStrain);
+}
+
+// Delete strain
+async function deleteStrain(strainId) {
+  try {
+    const response = await fetch(`/clouds/api/strains/${strainId}`, {
+      method: 'DELETE',
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      // Remove the strain from the strains data and re-render the strains list
+      strainsData = strainsData.filter((strain) => strain.id !== strainId);
+      renderStrains();
+
+      // Close the modal
+      document.querySelector('#deleteStrainModal').modal('hide');
+    } else {
+      alert('Error deleting strain: ' + data.message);
+    }
+  } catch (error) {
+    console.error('Error deleting strain:', error);
+  }
+}
+
+// Function to set up the event listener for the openCreateStrainModal button
+function setupOpenCreateStrainModalButton() {
+  const openCreateStrainModalButton = document.querySelector('#openCreateStrainModal');
+  openCreateStrainModalButton.addEventListener('click', () => {
+    const createStrainModal = new bootstrap.Modal(document.getElementById('createStrainModal'));
+    createStrainModal.show();
+  });
+}
+
+function openDeleteStrainModal(strainId) {
+  const deleteStrainModal = new bootstrap.Modal(document.getElementById('deleteStrainModal'));
+  const confirmDeleteStrainButton = document.getElementById('confirmDeleteStrain');
+
+  // Remove existing event listeners
+  confirmDeleteStrainButton.replaceWith(confirmDeleteStrainButton.cloneNode(true));
+  const newConfirmDeleteStrainButton = document.getElementById('confirmDeleteStrain');
+  
+  newConfirmDeleteStrainButton.onclick = () => deleteStrain(strainId);
+
+  deleteStrainModal.show();
+}
+
+function openUpdateStrainModal(strainId) {
+  const updateStrainModal = new bootstrap.Modal(document.getElementById('updateStrainModal'));
+  const strain = strainsData.find((strain) => strain.id === strainId);
+
+  document.getElementById('modal_strain_id').value = strain.id;
+  document.getElementById('update_name').value = strain.name;
+  document.getElementById('update_delta_nine_concentration').value = strain.delta_nine_concentration;
+  document.getElementById('update_target_symptom').value = strain.target_symptom;
+
+  updateStrainModal.show();
+}
+
+// Initialization
+document.removeEventListener('DOMContentLoaded', fetchStrains);
+document.addEventListener('DOMContentLoaded', () => {
+  fetchStrains();
+  setupCreateStrainForm();
+  setupUpdateStrainForm();
+  setupOpenCreateStrainModalButton();
 });
