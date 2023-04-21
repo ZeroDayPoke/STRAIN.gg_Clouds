@@ -17,7 +17,7 @@ server {
     server_name strain.gg www.strain.gg;
 
     location / {
-        return 301 $scheme://$host/clouds/;
+        return 301 \$scheme://\$host/clouds/;
     }
 
     location /clouds/ {
