@@ -7,7 +7,7 @@ sudo apt install -y nginx
 sudo rm -f /etc/nginx/sites-enabled/default
 
 # Create a new Nginx configuration file
-sudo bash -c "cat > /etc/nginx/sites-available/strain.gg << EOL
+sudo bash -c "cat > /etc/nginx/sites-available/strain.gg << 'EOL'
 server {
     listen 80;
     server_name strain.gg www.strain.gg;
