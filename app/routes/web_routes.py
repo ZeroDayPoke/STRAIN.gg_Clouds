@@ -47,7 +47,6 @@ def not_found_test():
 
 @web_routes.route('/signup', methods=['GET', 'POST'], strict_slashes=False)
 def signup():
-    print(request.method)
     if request.method == 'POST':
         # Get the user information from the form
         username = request.form.get('username')
