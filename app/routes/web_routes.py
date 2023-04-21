@@ -39,6 +39,12 @@ def index():
     return render_template('index.html')
 
 
+@web_routes.route('/clouds/', methods=['GET'], strict_slashes=False)
+def clouds():
+    """Return index page"""
+    return render_template('index.html')
+
+
 @web_routes.route('/404_test', methods=['GET'], strict_slashes=False)
 def not_found_test():
     """Return 404 page test"""
