@@ -44,7 +44,7 @@ from werkzeug.exceptions import BadRequest
 def create_strain():
     image = request.files.get('image')
     
-    # Set a maximum file size (e.g., 2 MB)
+    # Set a maximum file size of 1.5 MB
     max_file_size = 1.5 * 1024 * 1024
     
     if image:

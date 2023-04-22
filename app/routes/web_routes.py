@@ -57,11 +57,11 @@ def index():
     return render_template('index.html')
 
 
-@web_routes.route('/404_test', methods=['GET'], strict_slashes=False)
+@web_routes.route('/about', methods=['GET'], strict_slashes=False)
 @nocache
-def not_found_test():
-    """Return 404 page test"""
-    abort(404)
+def about():
+    """Return about page"""
+    return render_template('about.html')
 
 
 @web_routes.route('/signup', methods=['GET', 'POST'], strict_slashes=False)
