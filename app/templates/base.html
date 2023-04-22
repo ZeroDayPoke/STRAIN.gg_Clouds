@@ -4,7 +4,8 @@
 		<!-- Required meta tags -->
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	  
+		<!-- body style from css -->
+		<link rel="stylesheet" type="text/css" href="richard.css">
 		<!-- SEO keywords -->
 		<meta name="keywords" content="cannabis strains, marijuana strains, strain database, strain information, strain search, cannabis filters, marijuana filters, terpene profiles, THC concentration, CBD concentration, strain effects, strain flavors, strain aromas, medical cannabis strains">
 		
@@ -21,10 +22,12 @@
 		<!-- Richard CSS -->
 		<link href="{{ url_for('static', filename='styles/richard.css') }}" rel="stylesheet">
 	</head>
-	<body>
-		<header>
-			<img src="/app/static/images/header.png" alt="My Logo"
-			width="200" height="200">
+	<body class="body">
+		<header class="header">
+			<!-- header logo -->
+			<div style="display:flex; justify-content:center; align-items:center; height:20vh;">
+			<img src="/app/static/images/header.png" alt="My Logo" width="200" height="200">
+			</div>
 			<!-- Header content goes here -->
 			<nav class="navbar navbar-expand-lg navbar-light bg-light">
 				<meta charset="utf-8">
@@ -35,15 +38,10 @@
 				</button>	
 				<div class="collapse navbar-collapse" id="navbarSupportedContent">
 					<ul class="navbar-nav mr-auto">
-						<li class="nav-item">
-							<a class="nav-link" href="/clouds/">Home</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="/clouds/about">About</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="/clouds/contact">Contact</a>
-						</li>
+						<li><a href="#">Home</a></li>
+						<li><a href="#">About</a></li>
+						<li><a href="#">Services</a></li>
+						<li><a href="#">Contact</a></li>
 					</ul>
 					<ul class="navbar-nav nav-account">
 						{% if not current_user.is_authenticated %}
@@ -61,6 +59,7 @@
 					</ul>
 				</div>
 			</nav>
+			<img src="/app/static/images/header.png" alt="My Logo">
 		</header>
 		<main role="main" class="container">
 			{% for message in get_flashed_messages() %}
