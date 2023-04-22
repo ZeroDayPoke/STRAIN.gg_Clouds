@@ -36,7 +36,13 @@ These instructions will get you a copy of the project up and running on your loc
 ```export FLASK_APP=app/main.py```
 ```export FLASK_DEBUG=1```
 
-5. Run the application:
+5. Create mySQL Database:
+```cat setup/dev.sql | sudo mysql```
+
+6. Create NGINX Server:
+```./setup/nginx```
+
+7. Run the application:
 ```flask run```
 
 
