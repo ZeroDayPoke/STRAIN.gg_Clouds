@@ -1,41 +1,10 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<meta charset="UTF-8">
-    <meta name="description" content="Why get out of the clouds when you can get in the clouds">
-    <meta name="keywords" content="placeholer">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<title>STRAIN.gg Clouds</title>
+{% extends "base.html" %}
 
-</head>
-<body>
-    <header>
-        <h1>STRAIN.gg Clouds</h1>
-        <nav>
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <article>
-            <h2> placeholder </h2>
-            <p> placeholder </p>
-        </article>
-        <article>
-            <h2> placeholder </h2>
-        </article>
-    </main>
-    <footer>
-        The information provided on this website is for general informational purposes only and 
-        should not be relied upon for making any serious decisions. While we strive to ensure the 
-        accuracy of the content, we make no guarantees or warranties regarding its completeness, 
-        reliability, or accuracy. Any action you take based on the information on this website 
-        is strictly at your own risk, and we will not be liable for any losses or damages arising 
-        from your reliance on the content. It is always recommended to consult with a professional 
-        or expert before taking any action based on the information provided here.
-    </footer>
-</body>
-</html>
+{% block title %}
+    Index
+{% endblock %}
+
+{% block content %}
+	<h1>Index</h1>
+	<p>Index page</p>
+{% endblock %}

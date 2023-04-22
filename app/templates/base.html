@@ -23,8 +23,12 @@
 	</head>
 	<body>
 		<header>
+			<img src="C:\Users\taylo\OneDrive\Pictures\Screenshots\Screenshot 2023-04-21 141634.png" alt="My Logo">
+			<!-- Header content goes here -->
 			<nav class="navbar navbar-expand-lg navbar-light bg-light">
-				<a class="navbar-brand" href="#">STRAIN.gg</a>
+				<meta charset="utf-8">
+				<title>My Website</title>
+				<link rel="icon" type="image/png" href="{{ url_for('static', filename='images/header.png') }}">
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
 				</button>	
@@ -67,5 +71,14 @@
 			<script src="{{ url_for('static', filename='lib/popper.min.js') }}"></script>
 			<script src="{{ url_for('static', filename='lib/bootstrap.min.js') }}"></script>
 		</main>
+		<footer class="site-footer">
+			The information provided on this website is for general informational purposes only and 
+			should not be relied upon for making any serious decisions. While we strive to ensure the 
+			accuracy of the content, we make no guarantees or warranties regarding its completeness, 
+			reliability, or accuracy. Any action you take based on the information on this website 
+			is strictly at your own risk, and we will not be liable for any losses or damages arising 
+			from your reliance on the content. It is always recommended to consult with a professional 
+			or expert before taking any action based on the information provided here.
+		</footer>
 	</body>
 </html>

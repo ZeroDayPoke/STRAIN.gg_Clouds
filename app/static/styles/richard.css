@@ -9,3 +9,9 @@
   .nav-account .nav-link:hover {
     background-color: #f8f9fa;
   }
+  .site-footer {
+    background-color: #f8f9fa;
+    padding: 20px;
+    text-align: center;
+    font-size: 14px;
+  }
