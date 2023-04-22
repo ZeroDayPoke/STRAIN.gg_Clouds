@@ -3,9 +3,18 @@
 
 # Import necessary modules
 from .base import BaseModel, Base
-from sqlalchemy import Column, Integer, String, Table, ForeignKey
+from sqlalchemy import Column, Integer, String, Table, ForeignKey, Enum
 from sqlalchemy.orm import relationship
+from sqlalchemy_utils import ChoiceType
 from werkzeug.security import generate_password_hash
+
+# Import Enum for Python 3.4 and later
+from enum import Enum
+
+# Define the UserRole enumeration
+class UserRole(Enum):
+    CLOUD_CONSUMER = 'CLOUD_CONSUMER'
+    CLOUD_PRODUCER = 'CLOUD_PRODUCER'
 
 # Create the association table for users and their favorite strains
 user_strain_association = Table(
@@ -21,6 +30,7 @@ class User(BaseModel):
     username = Column(String(64), unique=True, nullable=False)
     email = Column(String(128), unique=True, nullable=False)
     password = Column(String(128), nullable=False)
+    role = Column(ChoiceType(UserRole, impl=String(20)), default=UserRole.CLOUD_CONSUMER, nullable=False)
     favorite_strains = relationship("Strain", secondary=user_strain_association, back_populates="users")
 
     def __init__(self, *args, **kwargs):
@@ -42,15 +52,24 @@ class User(BaseModel):
 
     @property
     def is_authenticated(self):
+        """Checks if user is authenticated"""
         return True
 
     @property
     def is_active(self):
+        """Checks if user is active"""
         return True
 
     @property
     def is_anonymous(self):
+        """Checks if user is anonymous"""
         return False
 
     def get_id(self):
+        """Gets the user id"""
         return str(self.id)
+
+    def add_favorite_strain(self, strain):
+        """Adds a strain to the user's favorites"""
+        if strain not in self.favorite_strains:
+            self.favorite_strains.append(strain)
