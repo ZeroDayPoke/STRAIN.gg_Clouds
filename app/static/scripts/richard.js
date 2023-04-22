@@ -25,8 +25,32 @@ function renderStrains() {
           <button class="btn btn-sm btn-warning" onclick="openUpdateStrainModal('${strain.id}')">Edit</button>
           <button class="btn btn-sm btn-danger" onclick="openDeleteStrainModal('${strain.id}')">Delete</button>
         </td>
+        <td>
+        <button class="btn btn-sm btn-success" onclick="addToFavorites('${strain.id}')">Save to Favorites</button>
+        </td>
       </tr>`)
     .join('');
+}
+
+async function addToFavorites(strainId) {
+  try {
+    const response = await fetch(`/clouds/api/favorite_strains/${strainId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      alert('Strain added to favorites successfully');
+    } else {
+      alert('Error adding strain to favorites: ' + data.message);
+    }
+  } catch (error) {
+    console.error('Error adding strain to favorites:', error);
+  }
 }
 
 // Function to handle the form submission

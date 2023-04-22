@@ -54,3 +54,7 @@ class User(BaseModel):
 
     def get_id(self):
         return str(self.id)
+
+    def add_favorite_strain(self, strain):
+        if strain not in self.favorite_strains:
+            self.favorite_strains.append(strain)

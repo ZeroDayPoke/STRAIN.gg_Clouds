@@ -3,6 +3,7 @@
 from flask import Blueprint, jsonify, request, abort
 from ..models import storage, strain, user
 from ..utils.helpers import get_json
+from flask_login import current_user
 
 # Blueprint for the app
 app_routes = Blueprint('app_routes', __name__, url_prefix='/clouds')
@@ -14,6 +15,9 @@ def validate_model(model, model_id):
     if obj is None:
         abort(404)
     return obj
+
+def get_current_user():
+    return current_user
 
 """Strain routes"""
 
@@ -59,3 +63,16 @@ def delete_strain(strain_id):
 def get_strain(strain_id):
     target_strain = validate_model('Strain', strain_id)
     return jsonify({"success": True, "strain": target_strain.to_dict()})
+
+
+@app_routes.route('/api/favorite_strains/<strain_id>', methods=['POST'], strict_slashes=False)
+def create_favorite_strain(strain_id):
+    current_user = get_current_user()
+    target_strain = validate_model('Strain', strain_id)
+
+    try:
+        current_user.add_favorite_strain(target_strain)
+        current_user.save(storage)
+        return jsonify({"success": True}), 200
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 400
