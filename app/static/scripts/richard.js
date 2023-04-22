@@ -20,8 +20,13 @@ function renderStrains() {
       <tr>
         <td><img src="/static/images/strain_images/${strain.image_filename}" alt="${strain.name}" class="strain-image"></td>
         <td>${strain.name}</td>
+        <td>${strain.type}</td>
         <td>${strain.delta_nine_concentration}</td>
-        <td>${strain.target_symptom}</td>
+        <td>${strain.cbd_concentration}</td>
+        <td>${strain.terpene_profile}</td>
+        <td>${strain.effects}</td>
+        <td>${strain.uses}</td>
+        <td>${strain.flavor}</td>
         <td>
           <button class="btn btn-sm btn-warning" onclick="openUpdateStrainModal('${strain.id}')">Edit</button>
           <button class="btn btn-sm btn-danger" onclick="openDeleteStrainModal('${strain.id}')">Delete</button>
@@ -64,14 +69,24 @@ async function submitCreateStrain(event) {
 
   // Retrieve the form inputs
   let name = $("#name").val();
-  let deltaNineConcentration = $("#delta_nine_concentration").val();
-  let targetSymptom = $("#target_symptom").val();
+  let type = $("#type").val();
+  let delta_nine_concentration = $("#delta_nine_concentration").val();
+  let cbd_concentration = $("#cbd_concentration").val();
+  let terpene_profile = $("#terpene_profile").val();
+  let effects = $("#effects").val();
+  let uses = $("#uses").val();
+  let flavor = $("#flavor").val();
   let image = $("#image").get(0).files[0];
 
   // Append the form inputs to the FormData object
   formData.append("name", name);
-  formData.append("delta_nine_concentration", deltaNineConcentration);
-  formData.append("target_symptom", targetSymptom);
+  formData.append("type", type);
+  formData.append("delta_nine_concentration", delta_nine_concentration);
+  formData.append("cbd_concentration", cbd_concentration);
+  formData.append("terpene_profile", terpene_profile);
+  formData.append("effects", effects);
+  formData.append("uses", uses);
+  formData.append("flavor", flavor);
   formData.append("image", image);
 
   try {
@@ -113,8 +128,13 @@ async function submitUpdateStrain(event) {
   // Get the strain ID and data from the form
   const strainId = document.querySelector('#modal_strain_id').value;
   const name = document.querySelector('#update_name').value;
+  const type = document.querySelector('#update_type').value;
   const delta_nine_concentration = document.querySelector('#update_delta_nine_concentration').value;
-  const target_symptom = document.querySelector('#update_target_symptom').value;
+  const cbd_concentration = document.querySelector('#update_cbd_concentration').value;
+  const terpene_profile = document.querySelector('#update_terpene_profile').value;
+  const effects = document.querySelector('#update_effects').value;
+  const uses = document.querySelector('#update_uses').value;
+  const flavor = document.querySelector('#update_flavor').value;
   const image = document.querySelector('#update_image').files[0];
 
   // Create a FormData object to handle the image upload
@@ -122,8 +142,13 @@ async function submitUpdateStrain(event) {
 
   // Append the form inputs to the FormData object
   formData.append("name", name);
+  formData.append("type", type);
   formData.append("delta_nine_concentration", delta_nine_concentration);
-  formData.append("target_symptom", target_symptom);
+  formData.append("cbd_concentration", cbd_concentration);
+  formData.append("terpene_profile", terpene_profile);
+  formData.append("effects", effects);
+  formData.append("uses", uses);
+  formData.append("flavor", flavor);
   if (image) {
     formData.append("image", image);
   }
@@ -221,8 +246,13 @@ function openUpdateStrainModal(strainId) {
 
   document.getElementById('modal_strain_id').value = strain.id;
   document.getElementById('update_name').value = strain.name;
+  document.getElementById('update_type').value = strain.type;
   document.getElementById('update_delta_nine_concentration').value = strain.delta_nine_concentration;
-  document.getElementById('update_target_symptom').value = strain.target_symptom;
+  document.getElementById('update_cbd_concentration').value = strain.cbd_concentration;
+  document.getElementById('update_terpene_profile').value = strain.terpene_profile;
+  document.getElementById('update_effects').value = strain.effects;
+  document.getElementById('update_uses').value = strain.uses;
+  document.getElementById('update_flavor').value = strain.flavor;
 
   updateStrainModal.show();
 }

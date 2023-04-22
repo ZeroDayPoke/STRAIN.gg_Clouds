@@ -40,9 +40,6 @@ def get_strains():
     return jsonify([strain.to_dict() for strain in strains.values()])
 
 
-from flask import request
-from werkzeug.exceptions import BadRequest
-
 @app_routes.route('/api/strains', methods=['POST'], strict_slashes=False)
 def create_strain():
     """api route to create a strain"""
@@ -61,7 +58,15 @@ def create_strain():
             file_size = os.path.getsize(image_path)
 
             if file_size <= max_file_size:
-                new_strain = strain.Strain(name=request.form['name'], delta_nine_concentration=request.form['delta_nine_concentration'], target_symptom=request.form['target_symptom'], image_filename=filename)
+                new_strain = strain.Strain(name=request.form['name'],
+                                           type=request.form['type'],
+                                           delta_nine_concentration=request.form['delta_nine_concentration'],
+                                           cbd_concentration=request.form['cbd_concentration'],
+                                           terpene_profile=request.form['terpene_profile'],
+                                           effects=request.form['effects'],
+                                           uses=request.form['uses'],
+                                           flavor=request.form['flavor'],
+                                           image_filename=filename)
             else:
                 # Remove the saved file if the size is too large
                 os.remove(image_path)
@@ -88,8 +93,13 @@ def update_strain(strain_id):
 
     try:
         target_strain.name = request.form['name']
+        target_strain.type = request.form['type']
         target_strain.delta_nine_concentration = request.form['delta_nine_concentration']
-        target_strain.target_symptom = request.form['target_symptom']
+        target_strain.cbd_concentration = request.form['cbd_concentration']
+        target_strain.terpene_profile = request.form['terpene_profile']
+        target_strain.effects = request.form['effects']
+        target_strain.uses = request.form['uses']
+        target_strain.flavor = request.form['flavor']
         target_strain.save(storage)
         return jsonify({"success": True, "strain": target_strain.to_dict()}), 200
     except Exception as e:
