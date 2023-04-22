@@ -6,7 +6,6 @@ from flask import Blueprint, render_template, abort, request, redirect, url_for,
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import check_password_hash
 from ..models import storage, user, strain
-from ..utils.helpers import nocache
 from functools import wraps
 
 # Create a blueprint for the web views
