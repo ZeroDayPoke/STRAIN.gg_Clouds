@@ -13,13 +13,13 @@ async function fetchStrains() {
 }
 
 // Function to render the strains list in DOM
-function renderStrains() {
+function renderStrains(strainsToRender = strainsData) {
   const strainsContainer = document.querySelector('#strainsContainer');
   strainsContainer.innerHTML = '<div class="row"></div>';
 
   let currentRow = strainsContainer.querySelector(".row");
 
-  strainsData.forEach((strain, index) => {
+  strainsToRender.forEach((strain, index) => {
     const strainCard = `
     <div class="col-md-6 mb-4">
       <div class="strain-card">
@@ -286,3 +286,32 @@ document.addEventListener('DOMContentLoaded', () => {
   setupUpdateStrainForm();
   setupOpenCreateStrainModalButton();
 });
+
+//Filtering
+document.addEventListener("DOMContentLoaded", function() {
+  // Filtering
+  document.getElementById("filter_type").addEventListener("change", filterStrains);
+  document.getElementById("filter_thc").addEventListener("input", function() {
+    document.getElementById("thc_value").innerText = this.value + '%';
+    filterStrains();
+  });
+  document.getElementById("filter_cbd").addEventListener("input", function() {
+    document.getElementById("cbd_value").innerText = this.value + '%';
+    filterStrains();
+  });
+});
+
+function filterStrains() {
+  const filterType = document.getElementById("filter_type").value;
+  const filterTHC = document.getElementById("filter_thc").value;
+  const filterCBD = document.getElementById("filter_cbd").value;
+
+  const filteredStrains = strainsData.filter(strain => {
+    const typeMatch = !filterType || strain.type === filterType;
+    const thcMatch = !filterTHC || strain.delta_nine_concentration <= filterTHC;
+    const cbdMatch = !filterCBD || strain.cbd_concentration <= filterCBD;
+    return typeMatch && thcMatch && cbdMatch;
+  });
+
+  renderStrains(filteredStrains);
+}
