@@ -56,7 +56,7 @@ def strains():
     else:
         role = 'anonymous'
     # Process the strains data as needed, e.g. sorting or filtering
-    return render_template('strains.html', strains=all_strains, role=role)
+    return render_template('strains.html', strains=all_strains, role=role, cloud_producer_role=UserRole.CLOUD_PRODUCER)
 
 
 @web_routes.route('/', methods=['GET'], strict_slashes=False)
