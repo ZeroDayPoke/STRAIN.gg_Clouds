@@ -1,8 +1,9 @@
-Flask
-Flask-SQLAlchemy
-Flask-Migrate
-Flask-Login
-mysqlclient
-SQLAlchemy
-python-dotenv
-Werkzeug
+Flask # for web framework
+Flask-SQLAlchemy # for database
+Flask-Migrate # for database migration
+Flask-Login # for user login
+Flask-CORS  # for cross origin resource sharing
+mysqlclient # for mysql database
+SQLAlchemy # for database
+python-dotenv # for environment variables
+Werkzeug # for password hashing

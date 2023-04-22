@@ -2,14 +2,17 @@
 """web views"""
 
 # Import the Flask and model modules
-from flask import Blueprint, render_template, abort, request, redirect, url_for, flash, session
+from flask import Blueprint, render_template, abort, request, redirect, url_for, flash, session, make_response
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import check_password_hash
 from ..models import storage, user, strain
+from ..utils.helpers import nocache
+from functools import wraps
 
 # Create a blueprint for the web views
-web_routes = Blueprint('web_routes', __name__, url_prefix='/clouds')
-
+web_routes = Blueprint('web_routes', __name__, url_prefix='/clouds',
+                       template_folder='templates', static_folder='static')
+web_routes.after_request(nocache)
 
 # Create a login manager instance
 login_manager = LoginManager()
