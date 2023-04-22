@@ -31,10 +31,10 @@ class BaseModel(Base):
         cls = (str(type(self)).split('.')[-1]).split('\'')[0]
         return '[{}] ({}) {}'.format(cls, self.id, self.__dict__)
 
-    def save(self):
+    def save(self, storage):
         """Updates the instance in the storage"""
-        models.storage.new(self)
-        models.storage.save()
+        storage.new(self)
+        storage.save()
 
     def to_dict(self):
         """Returns a dictionary representation of the instance, excluding _sa_instance_state"""
@@ -49,6 +49,6 @@ class BaseModel(Base):
 
         return result
 
-    def delete(self):
+    def delete(self, storage):
         """Deletes the instance from the storage"""
-        models.storage.delete(self)
+        storage.delete(self)

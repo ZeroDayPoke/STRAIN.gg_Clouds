@@ -24,8 +24,13 @@
 	<body>
 		<header>
 			<nav class="navbar navbar-expand-lg navbar-light bg-light">
-				<a class="navbar-brand" href="#">STRAIN.gg</a>
-				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+				<a class="navbar-brand" href="#">
+					<img src="{{ url_for('static', filename='images/header.png') }}"
+					alt="Logo" width="auto" height="30">
+				</a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse"
+				data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+				aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
 				</button>	
 				<div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -39,19 +44,25 @@
 						<li class="nav-item">
 							<a class="nav-link" href="/clouds/contact">Contact</a>
 						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="/clouds/strains">Strains</a>
+						</li>
 					</ul>
 					<ul class="navbar-nav nav-account">
 						{% if not current_user.is_authenticated %}
-						  <li class="nav-item">
-							<a class="nav-link" href="/clouds/signup">Sign Up</a>
-						  </li>
-						  <li class="nav-item">
-							<a class="nav-link" href="/clouds/signin">Sign In</a>
-						  </li>
+							<li class="nav-item">
+								<a class="nav-link" href="/clouds/signup">Sign Up</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="/clouds/signin">Sign In</a>
+							</li>
 						{% else %}
-						  <li class="nav-item">
-							<a class="nav-link" href="/clouds/signout">Sign Out</a>
-						  </li>
+							<li class="nav-item">
+								<a class="nav-link" href="{{ url_for('web_routes.account', user_id=current_user.id) }}">My Account</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="/clouds/signout">Sign Out</a>
+							</li>
 						{% endif %}
 					</ul>
 				</div>
@@ -66,6 +77,45 @@
 			<script src="{{ url_for('static', filename='lib/jquery.min.js') }}"></script>
 			<script src="{{ url_for('static', filename='lib/popper.min.js') }}"></script>
 			<script src="{{ url_for('static', filename='lib/bootstrap.min.js') }}"></script>
+			<script src="{{ url_for('static', filename='scripts/richard.js') }}"></script>
+			{% block display %}STRAIN.gg{% endblock %}
 		</main>
+		<footer class="bg-light mt-5 py-4">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-4">
+						<h5>About Us</h5>
+						<p>We are cinder demons</p>
+					</div>
+					<div class="col-md-4">
+						<h5>Quick Links</h5>
+						<ul class="list-unstyled">
+							<li><a href="{{ url_for('web_routes.index') }}">Home</a></li>
+						</ul>
+					</div>
+					<div class="col-md-4">
+						<h5>Contact Us</h5>
+						<p>Email: Coming Soon</p>
+						<p>Phone: Coming Soon</p>
+					</div>
+				</div>
+				<div class="row mt-3">
+					<div class="col text-center">
+						<p>&copy; 2023 Strain.gg. All rights reserved.</p>
+						<p>
+							The information provided on this website is for entertainment and general 
+							informational purposes only and should not be relied upon for making any medical 
+							decisions. While we strive to ensure the accuracy of the content, we make no 
+							guarantees or warranties regarding its completeness, reliability, or accuracy. 
+							Any action you take based on the information on this website is strictly at your 
+							own risk, and we will not be liable for any losses or damages arising from your 
+							reliance on the content. It is always recommended to consult with a healthcare 
+							professional or expert before taking any action based on the information 
+							provided here.
+						</p>
+					</div>
+				</div>
+			</div>
+		</footer>
 	</body>
 </html>
