@@ -42,9 +42,9 @@ def create_strain():
     if image and allowed_file(image.filename):
         filename = secure_filename(image.filename)
         image.save(os.path.join(UPLOAD_FOLDER, filename))
-        new_strain = strain.Strain(name=request.form['name'], delta_nine_concentration=request.form['delta_nine_concentration'], target_symptom=request.form['target_symptom'], image_filename=filename)
+        new_strain = strain.Strain(name=request.form.get('name'), delta_nine_concentration=request.form.get('delta_nine_concentration'), target_symptom=request.form.get('target_symptom'), image_filename=filename)
     else:
-        new_strain = strain.Strain(name=request.form['name'], delta_nine_concentration=request.form['delta_nine_concentration'], target_symptom=request.form['target_symptom'])
+        new_strain = strain.Strain(name=request.form.get('name'), delta_nine_concentration=request.form.get('delta_nine_concentration'), target_symptom=request.form.get('target_symptom'))
 
     new_strain.save(storage)
     return jsonify({"success": True, "strain": new_strain.to_dict()}), 201
