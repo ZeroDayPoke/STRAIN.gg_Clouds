@@ -20,6 +20,7 @@ login_manager = LoginManager()
 def nocache(view):
     @wraps(view)
     def no_cache(*args, **kwargs):
+        """Disable caching for a view"""
         response = make_response(view(*args, **kwargs))
         response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0'
         response.headers['Pragma'] = 'no-cache'
@@ -31,12 +32,14 @@ def nocache(view):
 
 # Initialize the login manager with the app
 def init_app(app):
+    """Initialize the login manager with the app"""
     login_manager.init_app(app)
 
 
 # Load the user from the user_id stored in the session
 @login_manager.user_loader
 def load_user(user_id):
+    """Return the user object for the specified user_id"""
     return storage.get(user.User, user_id)
 
 
@@ -67,6 +70,7 @@ def about():
 @web_routes.route('/signup', methods=['GET', 'POST'], strict_slashes=False)
 @nocache
 def signup():
+    """Return the signup page or process the signup form submission"""
     if request.method == 'POST':
         # Get the user information from the form
         username = request.form.get('username')
@@ -97,6 +101,7 @@ def signup():
 @web_routes.route('/signin', methods=['GET', 'POST'], strict_slashes=False)
 @nocache
 def signin():
+    """Return the signin page or process the signin form submission"""
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
@@ -118,6 +123,7 @@ def signin():
 @nocache
 @login_required
 def signout():
+    """Sign out the current user and redirect to the home page"""
     logout_user()
     flash('Successfully logged out.')
     return redirect(url_for('web_routes.index'))
