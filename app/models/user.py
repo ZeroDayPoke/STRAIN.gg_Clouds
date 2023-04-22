@@ -42,19 +42,24 @@ class User(BaseModel):
 
     @property
     def is_authenticated(self):
+        """Checks if user is authenticated"""
         return True
 
     @property
     def is_active(self):
+        """Checks if user is active"""
         return True
 
     @property
     def is_anonymous(self):
+        """Checks if user is anonymous"""
         return False
 
     def get_id(self):
+        """Gets the user id"""
         return str(self.id)
 
     def add_favorite_strain(self, strain):
+        """Adds a strain to the user's favorites"""
         if strain not in self.favorite_strains:
             self.favorite_strains.append(strain)

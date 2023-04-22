@@ -24,15 +24,18 @@ def validate_model(model, model_id):
     return obj
 
 def allowed_file(filename):
+    """Check if the file is allowed"""
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def get_current_user():
+    """Return the current user"""
     return current_user
 
 """Strain routes"""
 
 @app_routes.route('/api/strains', methods=['GET'], strict_slashes=False)
 def get_strains():
+    """api route to get all strains"""
     strains = storage.all('Strain')
     return jsonify([strain.to_dict() for strain in strains.values()])
 
@@ -42,6 +45,7 @@ from werkzeug.exceptions import BadRequest
 
 @app_routes.route('/api/strains', methods=['POST'], strict_slashes=False)
 def create_strain():
+    """api route to create a strain"""
     image = request.files.get('image')
     
     # Set a maximum file size of 1.5 MB
@@ -73,6 +77,7 @@ def create_strain():
 
 @app_routes.route('/api/strains/<strain_id>', methods=['PUT'], strict_slashes=False)
 def update_strain(strain_id):
+    """api route to update a strain"""
     target_strain = validate_model('Strain', strain_id)
 
     image = request.files.get('image')
@@ -93,6 +98,7 @@ def update_strain(strain_id):
 
 @app_routes.route('/api/strains/<strain_id>', methods=['DELETE'], strict_slashes=False)
 def delete_strain(strain_id):
+    """api route to delete a strain"""
     target_strain = validate_model('Strain', strain_id)
     storage.delete(target_strain)
     storage.save()
@@ -101,12 +107,14 @@ def delete_strain(strain_id):
 
 @app_routes.route('/api/strains/<strain_id>', methods=['GET'], strict_slashes=False)
 def get_strain(strain_id):
+    """api route to get a strain"""
     target_strain = validate_model('Strain', strain_id)
     return jsonify({"success": True, "strain": target_strain.to_dict()})
 
 
 @app_routes.route('/api/favorite_strains/<strain_id>', methods=['POST'], strict_slashes=False)
 def create_favorite_strain(strain_id):
+    """api route to add a strain to favorites"""
     current_user = get_current_user()
     target_strain = validate_model('Strain', strain_id)
 

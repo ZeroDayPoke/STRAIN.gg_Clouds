@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+"""Strain model"""
 from sqlalchemy import Column, String, Float
 from .base import BaseModel
 from sqlalchemy.orm import relationship
