@@ -3,9 +3,17 @@
 
 # Import necessary modules
 from .base import BaseModel, Base
-from sqlalchemy import Column, Integer, String, Table, ForeignKey
+from sqlalchemy import Column, Integer, String, Table, ForeignKey, Enum
 from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash
+
+# Import Enum for Python 3.4 and later
+from enum import Enum as PyEnum
+
+# Define the UserRole enumeration
+class UserRole(PyEnum):
+    REGULAR = "regular"
+    CONTRIBUTOR = "contributor"
 
 # Create the association table for users and their favorite strains
 user_strain_association = Table(
@@ -21,6 +29,7 @@ class User(BaseModel):
     username = Column(String(64), unique=True, nullable=False)
     email = Column(String(128), unique=True, nullable=False)
     password = Column(String(128), nullable=False)
+    role = Column(Enum(UserRole), default=UserRole.REGULAR, nullable=False)
     favorite_strains = relationship("Strain", secondary=user_strain_association, back_populates="users")
 
     def __init__(self, *args, **kwargs):

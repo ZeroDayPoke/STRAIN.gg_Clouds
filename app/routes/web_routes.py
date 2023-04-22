@@ -149,10 +149,14 @@ def account(user_id):
         # Fetch the favorite strains
         favorite_strains = user_account.favorite_strains
 
+        # Fetch the user's type
+        role = user_account.role
+
         # Render the account page with the user's email and favorite strains
         return render_template('account.html',
                                email=user_account.email,
-                               favorite_strains=favorite_strains)
+                               favorite_strains=favorite_strains,
+                               role=role)
     else:
         flash('You do not have permission to access this page.')
         return redirect(url_for('web_routes.index'))
