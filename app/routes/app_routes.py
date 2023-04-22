@@ -1,12 +1,19 @@
 #!/usr/bin/python3
 """Routes for the app"""
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, abort
 from ..models import storage, strain, user
-from ..utils.helpers import validate_model, get_json
+from ..utils.helpers import get_json
 
 # Blueprint for the app
 app_routes = Blueprint('app_routes', __name__, url_prefix='/clouds')
 
+# Helper function
+def validate_model(model, model_id):
+    """Validate if a model exists"""
+    obj = storage.get(model, model_id)
+    if obj is None:
+        abort(404)
+    return obj
 
 """Strain routes"""
 
@@ -29,6 +36,7 @@ def create_strain():
 def update_strain(strain_id):
     target_strain = validate_model('Strain', strain_id)
 
+    print(target_strain)
     data = get_json()
 
     for key, value in data.items():
@@ -41,8 +49,8 @@ def update_strain(strain_id):
 @app_routes.route('/api/strains/<strain_id>', methods=['DELETE'], strict_slashes=False)
 def delete_strain(strain_id):
     target_strain = validate_model('Strain', strain_id)
-
-    target_strain.delete(storage)
+    storage.delete(target_strain)
+    storage.save()
     return jsonify({}), 200
 
 

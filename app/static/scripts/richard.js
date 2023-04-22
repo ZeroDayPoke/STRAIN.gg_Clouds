@@ -23,8 +23,8 @@ function renderStrains() {
         <td>${strain.target_symptom}</td>
         <td>
           <!-- Add buttons for update and delete actions -->
-          <button class="btn btn-sm btn-warning" onclick="openUpdateStrainModal(${strain.id})">Edit</button>
-          <button class="btn btn-sm btn-danger" onclick="openDeleteStrainModal(${strain.id})">Delete</button>
+          <button class="btn btn-sm btn-warning" onclick="openUpdateStrainModal('${strain.id}')">Edit</button>
+          <button class="btn btn-sm btn-danger" onclick="openDeleteStrainModal('${strain.id}')">Delete</button>
         </td>
       </tr>`)
     .join('');
@@ -158,7 +158,8 @@ function setupOpenCreateStrainModalButton() {
 }
 
 function openDeleteStrainModal(strainId) {
-  const deleteStrainModal = new bootstrap.Modal(document.getElementById('deleteStrainModal'));
+  const deleteStrainModalElement = document.getElementById('deleteStrainModal');
+  const deleteStrainModal = new bootstrap.Modal(deleteStrainModalElement);
   const confirmDeleteStrainButton = document.getElementById('confirmDeleteStrain');
 
   // Remove existing event listeners
@@ -171,7 +172,8 @@ function openDeleteStrainModal(strainId) {
 }
 
 function openUpdateStrainModal(strainId) {
-  const updateStrainModal = new bootstrap.Modal(document.getElementById('updateStrainModal'));
+  const updateStrainModalElement = document.getElementById('updateStrainModal');
+  const updateStrainModal = new bootstrap.Modal(updateStrainModalElement);
   const strain = strainsData.find((strain) => strain.id === strainId);
 
   document.getElementById('modal_strain_id').value = strain.id;
