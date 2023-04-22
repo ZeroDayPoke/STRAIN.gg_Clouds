@@ -109,8 +109,13 @@ async function submitUpdateStrain(event) {
       renderStrains();
 
       // Close the modal and clear the form inputs
-      document.querySelector('#updateStrainModal').modal('hide');
-      document.querySelector('#updateStrainForm').reset();
+      const updateStrainModalInstance = new bootstrap.Modal(document.getElementById('updateStrainModal'));
+      updateStrainModalInstance.hide();
+
+      // Add a delay before resetting the form
+      setTimeout(() => {
+        document.querySelector('#updateStrainForm').reset();
+      }, 500);
     } else {
       alert('Error updating strain: ' + data.message);
     }
@@ -139,7 +144,8 @@ async function deleteStrain(strainId) {
       renderStrains();
 
       // Close the modal
-      document.querySelector('#deleteStrainModal').modal('hide');
+      const deleteStrainModalInstance = new bootstrap.Modal(document.getElementById('deleteStrainModal'));
+      deleteStrainModalInstance.hide();
     } else {
       alert('Error deleting strain: ' + data.message);
     }
@@ -185,7 +191,6 @@ function openUpdateStrainModal(strainId) {
 }
 
 // Initialization
-document.removeEventListener('DOMContentLoaded', fetchStrains);
 document.addEventListener('DOMContentLoaded', () => {
   fetchStrains();
   setupCreateStrainForm();

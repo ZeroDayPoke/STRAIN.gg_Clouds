@@ -29,21 +29,22 @@ def create_strain():
     
     new_strain = strain.Strain(name=data['name'], delta_nine_concentration=data['delta_nine_concentration'], target_symptom=data['target_symptom'])
     new_strain.save(storage)
-    return jsonify(new_strain.to_dict()), 201
+    return jsonify({"success": True, "strain": new_strain.to_dict()}), 201
 
 
 @app_routes.route('/api/strains/<strain_id>', methods=['PUT'], strict_slashes=False)
 def update_strain(strain_id):
     target_strain = validate_model('Strain', strain_id)
 
-    print(target_strain)
     data = get_json()
-
-    for key, value in data.items():
-        if key not in ['id', 'created_at', 'updated_at']:
-            setattr(target_strain, key, value)
-    target_strain.save(storage)
-    return jsonify(target_strain.to_dict()), 200
+    try:
+        for key, value in data.items():
+            if key not in ['id', 'created_at', 'updated_at']:
+                setattr(target_strain, key, value)
+        target_strain.save(storage)
+        return jsonify({"success": True, "strain": target_strain.to_dict()}), 200
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 400
 
 
 @app_routes.route('/api/strains/<strain_id>', methods=['DELETE'], strict_slashes=False)
@@ -51,10 +52,10 @@ def delete_strain(strain_id):
     target_strain = validate_model('Strain', strain_id)
     storage.delete(target_strain)
     storage.save()
-    return jsonify({}), 200
+    return jsonify({"success": True}), 200
 
 
 @app_routes.route('/api/strains/<strain_id>', methods=['GET'], strict_slashes=False)
 def get_strain(strain_id):
     target_strain = validate_model('Strain', strain_id)
-    return jsonify(target_strain.to_dict())
+    return jsonify({"success": True, "strain": target_strain.to_dict()})
