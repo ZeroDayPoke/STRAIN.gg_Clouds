@@ -12,10 +12,22 @@ from functools import wraps
 # Create a blueprint for the web views
 web_routes = Blueprint('web_routes', __name__, url_prefix='/clouds',
                        template_folder='templates', static_folder='static')
-web_routes.after_request(nocache)
 
 # Create a login manager instance
 login_manager = LoginManager()
+
+
+# Decorator to disable caching for a view
+def nocache(view):
+    @wraps(view)
+    def no_cache(*args, **kwargs):
+        response = make_response(view(*args, **kwargs))
+        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '-1'
+        return response
+
+    return no_cache
 
 
 # Initialize the login manager with the app
@@ -31,6 +43,7 @@ def load_user(user_id):
 
 # Define the routes for the web views
 @web_routes.route('/strains', methods=['GET'], strict_slashes=False)
+@nocache
 def strains():
     """Return strains page"""
     all_strains = storage.all('Strain').values()
@@ -39,18 +52,21 @@ def strains():
 
 
 @web_routes.route('/', methods=['GET'], strict_slashes=False)
+@nocache
 def index():
     """Return index page"""
     return render_template('index.html')
 
 
 @web_routes.route('/404_test', methods=['GET'], strict_slashes=False)
+@nocache
 def not_found_test():
     """Return 404 page test"""
     abort(404)
 
 
 @web_routes.route('/signup', methods=['GET', 'POST'], strict_slashes=False)
+@nocache
 def signup():
     if request.method == 'POST':
         # Get the user information from the form
@@ -80,6 +96,7 @@ def signup():
 
 
 @web_routes.route('/signin', methods=['GET', 'POST'], strict_slashes=False)
+@nocache
 def signin():
     if request.method == 'POST':
         username = request.form.get('username')
@@ -99,6 +116,7 @@ def signin():
 
 
 @web_routes.route('/signout', methods=['GET'], strict_slashes=False)
+@nocache
 @login_required
 def signout():
     logout_user()
@@ -107,6 +125,7 @@ def signout():
 
 
 @web_routes.route('/account/<string:user_id>', methods=['GET'], strict_slashes=False)
+@nocache
 @login_required
 def account(user_id):
     """Return the account page for the specified user"""
