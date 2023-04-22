@@ -44,6 +44,7 @@ def load_user(user_id):
 
 
 # Define the routes for the web views
+
 @web_routes.route('/strains', methods=['GET'], strict_slashes=False)
 @nocache
 def strains():
@@ -65,6 +66,13 @@ def index():
 def about():
     """Return about page"""
     return render_template('about.html')
+
+
+@web_routes.route('/contact', methods=['GET'], strict_slashes=False)
+@nocache
+def contact():
+    """Return contact page"""
+    return render_template('contact.html')
 
 
 @web_routes.route('/signup', methods=['GET', 'POST'], strict_slashes=False)
