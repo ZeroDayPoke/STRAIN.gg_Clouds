@@ -80,5 +80,42 @@
 			<script src="{{ url_for('static', filename='scripts/richard.js') }}"></script>
 			{% block display %}STRAIN.gg{% endblock %}
 		</main>
+		<footer class="bg-light mt-5 py-4">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-4">
+						<h5>About Us</h5>
+						<p>We are cinder demons</p>
+					</div>
+					<div class="col-md-4">
+						<h5>Quick Links</h5>
+						<ul class="list-unstyled">
+							<li><a href="{{ url_for('web_routes.index') }}">Home</a></li>
+						</ul>
+					</div>
+					<div class="col-md-4">
+						<h5>Contact Us</h5>
+						<p>Email: Coming Soon</p>
+						<p>Phone: Coming Soon</p>
+					</div>
+				</div>
+				<div class="row mt-3">
+					<div class="col text-center">
+						<p>&copy; 2023 Strain.gg. All rights reserved.</p>
+						<p>
+							The information provided on this website is for entertainment and general 
+							informational purposes only and should not be relied upon for making any medical 
+							decisions. While we strive to ensure the accuracy of the content, we make no 
+							guarantees or warranties regarding its completeness, reliability, or accuracy. 
+							Any action you take based on the information on this website is strictly at your 
+							own risk, and we will not be liable for any losses or damages arising from your 
+							reliance on the content. It is always recommended to consult with a healthcare 
+							professional or expert before taking any action based on the information 
+							provided here.
+						</p>
+					</div>
+				</div>
+			</div>
+		</footer>
 	</body>
 </html>
