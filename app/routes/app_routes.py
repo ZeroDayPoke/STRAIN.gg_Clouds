@@ -6,6 +6,7 @@ from ..models import storage, strain, user
 from ..utils.helpers import get_json
 from flask_login import current_user
 from werkzeug.utils import secure_filename
+from werkzeug.exceptions import BadRequest
 
 # Blueprint for the app
 app_routes = Blueprint('app_routes', __name__, url_prefix='/clouds')
@@ -36,15 +37,35 @@ def get_strains():
     return jsonify([strain.to_dict() for strain in strains.values()])
 
 
+from flask import request
+from werkzeug.exceptions import BadRequest
+
 @app_routes.route('/api/strains', methods=['POST'], strict_slashes=False)
 def create_strain():
     image = request.files.get('image')
-    if image and allowed_file(image.filename):
-        filename = secure_filename(image.filename)
-        image.save(os.path.join(UPLOAD_FOLDER, filename))
-        new_strain = strain.Strain(name=request.form.get('name'), delta_nine_concentration=request.form.get('delta_nine_concentration'), target_symptom=request.form.get('target_symptom'), image_filename=filename)
+    
+    # Set a maximum file size (e.g., 2 MB)
+    max_file_size = 1.5 * 1024 * 1024
+    
+    if image:
+        if allowed_file(image.filename):
+            filename = secure_filename(image.filename)
+            image_path = os.path.join(UPLOAD_FOLDER, filename)
+            image.save(image_path)
+
+            # Check the file size after saving it to the server
+            file_size = os.path.getsize(image_path)
+
+            if file_size <= max_file_size:
+                new_strain = strain.Strain(name=request.form['name'], delta_nine_concentration=request.form['delta_nine_concentration'], target_symptom=request.form['target_symptom'], image_filename=filename)
+            else:
+                # Remove the saved file if the size is too large
+                os.remove(image_path)
+                return jsonify({"success": False, "message": "File size is too large. Maximum allowed file size is 1.5 MB."}), 400
+        else:
+            return jsonify({"success": False, "message": "Invalid file type."}), 400
     else:
-        new_strain = strain.Strain(name=request.form.get('name'), delta_nine_concentration=request.form.get('delta_nine_concentration'), target_symptom=request.form.get('target_symptom'))
+        new_strain = strain.Strain(name=request.form['name'], delta_nine_concentration=request.form['delta_nine_concentration'], target_symptom=request.form['target_symptom'])
 
     new_strain.save(storage)
     return jsonify({"success": True, "strain": new_strain.to_dict()}), 201
