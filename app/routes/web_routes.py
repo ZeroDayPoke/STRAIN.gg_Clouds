@@ -166,3 +166,21 @@ def account(user_id):
     else:
         flash('You do not have permission to access this page.')
         return redirect(url_for('web_routes.index'))
+
+
+@web_routes.route('/remove_favorite', methods=['POST'])
+@login_required
+def remove_favorite():
+    """route to remove a favorite strain from the user's favorites"""
+    strain_id = request.form.get('strain_id')
+    if strain_id:
+        favorite_strain = storage.get("Strain", strain_id)
+        if favorite_strain:
+            current_user.remove_favorite_strain(favorite_strain)
+            storage.save()
+            flash(f"Removed {favorite_strain.name} from your favorites.", "success")
+        else:
+            flash("Invalid strain ID.", "error")
+    else:
+        flash("No strain ID provided.", "error")
+    return redirect(url_for('web_routes.account', user_id=current_user.id))

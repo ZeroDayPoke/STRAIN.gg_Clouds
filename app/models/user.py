@@ -73,3 +73,8 @@ class User(BaseModel):
         """Adds a strain to the user's favorites"""
         if strain not in self.favorite_strains:
             self.favorite_strains.append(strain)
+
+    def remove_favorite_strain(self, strain):
+        """Removes a strain from the user's favorites"""
+        if strain in self.favorite_strains:
+            self.favorite_strains.remove(strain)
