@@ -22,12 +22,13 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 # Close storage on app teardown
 @app.teardown_appcontext
 def close_db(error):
-    """ Close Storage """
+    """Close Storage"""
     storage.close()
 
 # Handle 404 errors
 @app.errorhandler(404)
 def not_found(error):
+    """ Handle 404 errors """
     return render_template('404.html'), 404
 
 if __name__ == '__main__':
