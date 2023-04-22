@@ -15,6 +15,7 @@ app_routes = Blueprint('app_routes', __name__, url_prefix='/clouds')
 UPLOAD_FOLDER = 'app/static/images/strain_images/'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
+
 # Helper function
 def validate_model(model, model_id):
     """Validate if a model exists"""
@@ -23,15 +24,19 @@ def validate_model(model, model_id):
         abort(404)
     return obj
 
+
 def allowed_file(filename):
     """Check if the file is allowed"""
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 def get_current_user():
     """Return the current user"""
     return current_user
 
+
 """Strain routes"""
+
 
 @app_routes.route('/api/strains', methods=['GET'], strict_slashes=False)
 def get_strains():
@@ -44,10 +49,10 @@ def get_strains():
 def create_strain():
     """api route to create a strain"""
     image = request.files.get('image')
-    
+
     # Set a maximum file size of 1.5 MB
     max_file_size = 1.5 * 1024 * 1024
-    
+
     if image:
         if allowed_file(image.filename):
             filename = secure_filename(image.filename)

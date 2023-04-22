@@ -1,15 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Account</h1>
-<p>Email: {{ email }}</p>
-<p>User Type: {{ role }}</p>
-
-<h2>Favorite Strains</h2>
-<ul>
-{% for strain in favorite_strains %}
-    <li>{{ strain.name }}</li>
-{% endfor %}
-</ul>
-
+    <h1>Account</h1>
+    <p>Email: {{ email }}</p>
+    <p>User Type: {{ role }}</p>
+    <h2>Favorite Strains</h2>
+    <ul>
+        {% for strain in favorite_strains %}
+            <li>{{ strain.name }}</li>
+        {% endfor %}
+    </ul>
 {% endblock %}
