@@ -138,31 +138,45 @@
 {% block display %}
   <div class="container">
     <h1 class="text-center mt-5 mb-5">Strains</h1>
-    <div class="row">
-      <div class="col-md-12">
-		{% if role == cloud_producer_role %}
-    		<button class="btn btn-primary mb-3" id="openCreateStrainModal">Create Strain</button>
-		{% endif %}
-		<table class="table table-bordered table-striped">
-			<thead>
-				<tr>
-					<th>Image</th>
-					<th>Type</th>
-					<th>Name</th>
-					<th>THC Concentration</th>
-					<th>CBD Concentration</th>
-					<th>Terpene Profile</th>
-					<th>Effects</th>
-					<th>Uses</th>
-					<th>Flavor</th>
-					<th>Actions</th>
-					<th>Save to Favorites</th>
-				</tr>
-			</thead>
-			<tbody id="strainsTableBody">
-				<!-- Strains and Save to Favorites buttons added dynamically using JavaScript -->
-			</tbody>
-		</table>
+    <div class="row mb-3">
+      {% if role == cloud_producer_role %}
+        <div class="col-md-12 text-center">
+          <button class="btn btn-primary" id="openCreateStrainModal">Create Strain</button>
+        </div>
+      {% endif %}
+    </div>
+    <div id="strainsContainer">
+      <div class="row">
+        {% for strain in strains %}
+		  <div class="col-md-6 col-sm-12 mb-4">
+            <div class="card h-100">
+              <img src="/static/images/strain_images/{{ strain.image_filename }}" class="card-img-top" alt="{{ strain.name }}">
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title">{{ strain.name }}</h5>
+                <p class="card-text">
+                  <strong>Type:</strong> {{ strain.type }}<br>
+                  <strong>THC:</strong> {{ strain.thc_concentration }}<br>
+                  <strong>CBD:</strong> {{ strain.cbd_concentration }}<br>
+                  <strong>Terpene Profile:</strong> {{ strain.terpene_profile }}<br>
+                </p>
+                <p class="card-text flex-grow-1">
+                  <strong>Effects:</strong> {{ strain.effects }}<br>
+                  <strong>Uses:</strong> {{ strain.uses }}<br>
+                  <strong>Flavor:</strong> {{ strain.flavor }}
+                </p>
+              {% if role == cloud_producer_role %}
+                <button class="btn btn-primary edit-strain-btn" onclick="openUpdateStrainModal('{{ strain.id }}')">Edit</button>
+                <button class="btn btn-danger delete-strain-btn" onclick="openDeleteStrainModal('{{ strain.id }}')">Delete</button>
+              {% endif %}
+                {% if current_user.is_authenticated %}
+                  <form action="{{ url_for('app_routes.create_favorite_strain', strain_id=strain.id) }}" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-success">Add to Favorites</button>
+                  </form>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
       </div>
     </div>
   </div>

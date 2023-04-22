@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """Routes for the app"""
 import os
-from flask import Blueprint, jsonify, request, abort
+from flask import Blueprint, jsonify, request, abort, redirect, url_for
 from ..models import storage, strain, user
 from ..utils.helpers import get_json
 from flask_login import current_user
@@ -136,6 +136,6 @@ def create_favorite_strain(strain_id):
     try:
         current_user.add_favorite_strain(target_strain)
         current_user.save(storage)
-        return jsonify({"success": True}), 200
+        return jsonify({"success": True, "strain": target_strain.to_dict()}), 201
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 400

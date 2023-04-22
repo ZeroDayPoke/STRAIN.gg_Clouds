@@ -14,28 +14,42 @@ async function fetchStrains() {
 
 // Function to render the strains list in DOM
 function renderStrains() {
-  const strainsTableBody = document.querySelector('#strainsTableBody');
-  strainsTableBody.innerHTML = strainsData
-    .map((strain) => `
-      <tr>
-        <td><img src="/static/images/strain_images/${strain.image_filename}" alt="${strain.name}" class="strain-image"></td>
-        <td>${strain.name}</td>
-        <td>${strain.type}</td>
-        <td>${strain.delta_nine_concentration}</td>
-        <td>${strain.cbd_concentration}</td>
-        <td>${strain.terpene_profile}</td>
-        <td>${strain.effects}</td>
-        <td>${strain.uses}</td>
-        <td>${strain.flavor}</td>
-        <td>
-          <button class="btn btn-sm btn-warning" onclick="openUpdateStrainModal('${strain.id}')">Edit</button>
-          <button class="btn btn-sm btn-danger" onclick="openDeleteStrainModal('${strain.id}')">Delete</button>
-        </td>
-        <td>
-          <button class="btn btn-sm btn-success" onclick="addToFavorites('${strain.id}')">Save to Favorites</button>
-        </td>
-      </tr>`)
-    .join('');
+  const strainsContainer = document.querySelector('#strainsContainer');
+  strainsContainer.innerHTML = '<div class="row"></div>';
+
+  let currentRow = strainsContainer.querySelector(".row");
+
+  strainsData.forEach((strain, index) => {
+    const strainCard = `
+      <div class="col-md-6 mb-4">
+        <div class="strain-card">
+          <img src="/static/images/strain_images/${strain.image_filename}" alt="${strain.name}" class="strain-image">
+          <h3>${strain.name}</h3>
+          <p>Type: ${strain.type}</p>
+          <p>Delta-9 Concentration: ${strain.delta_nine_concentration}</p>
+          <p>CBD Concentration: ${strain.cbd_concentration}</p>
+          <p>Terpene Profile: ${strain.terpene_profile}</p>
+          <p>Effects: ${strain.effects}</p>
+          <p>Uses: ${strain.uses}</p>
+          <p>Flavor: ${strain.flavor}</p>
+          <div class="strain-card-buttons">
+            <button class="btn btn-sm btn-warning" onclick="openUpdateStrainModal('${strain.id}')">Edit</button>
+            <button class="btn btn-sm btn-danger" onclick="openDeleteStrainModal('${strain.id}')">Delete</button>
+            <button class="btn btn-sm btn-success" onclick="addToFavorites('${strain.id}')">Save to Favorites</button>
+          </div>
+        </div>
+      </div>`;
+
+    currentRow.innerHTML += strainCard;
+
+    // Create a new row for every two strain cards
+    if (index % 2 === 1) {
+      const newRow = document.createElement("div");
+      newRow.className = "row";
+      strainsContainer.appendChild(newRow);
+      currentRow = newRow;
+    }
+  });
 }
 
 // Function to add the strain to the user's favorites
