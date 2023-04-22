@@ -7,6 +7,7 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user, login_
 from werkzeug.security import check_password_hash
 from ..models import storage, user, strain
 from functools import wraps
+from ..models.user import User, UserRole
 
 # Create a blueprint for the web views
 web_routes = Blueprint('web_routes', __name__, url_prefix='/clouds',
@@ -50,8 +51,12 @@ def load_user(user_id):
 def strains():
     """Return strains page"""
     all_strains = storage.all('Strain').values()
+    if current_user.is_authenticated:
+        role = current_user.role
+    else:
+        role = 'anonymous'
     # Process the strains data as needed, e.g. sorting or filtering
-    return render_template('strains.html', strains=all_strains)
+    return render_template('strains.html', strains=all_strains, role=role)
 
 
 @web_routes.route('/', methods=['GET'], strict_slashes=False)
@@ -84,6 +89,7 @@ def signup():
         username = request.form.get('username')
         email = request.form.get('email')
         password = request.form.get('password')
+        role = UserRole.CLOUD_PRODUCER if request.form.get('role') == str(UserRole.CLOUD_PRODUCER.value) else UserRole.CLOUD_CONSUMER
 
         # Check if a user with the same username already exists
         all_users = storage.all(user.User).values()
@@ -93,7 +99,7 @@ def signup():
             return redirect(url_for('web_routes.signup'))
 
         # Instantiate a new User object
-        new_user = user.User(username=username, email=email, password=password)
+        new_user = user.User(username=username, email=email, password=password, role=role)
 
         # Save the new user to the database
         storage.new(new_user)
@@ -103,7 +109,7 @@ def signup():
         return redirect(url_for('web_routes.index'))
 
     # Render the signup form template
-    return render_template('signup.html')
+    return render_template('signup.html', UserRole=UserRole)
 
 
 @web_routes.route('/signin', methods=['GET', 'POST'], strict_slashes=False)

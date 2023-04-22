@@ -21,9 +21,9 @@
                 <input type="password" class="form-control" id="password" name="password" required>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="contributor" id="strain_grower" name="role">
-                <label class="form-check-label" for="strain_grower">
-                    I am a strain grower (contributor)
+                <input class="form-check-input" type="checkbox" value="{{ UserRole.CLOUD_PRODUCER.value }}" id="cloud_producer" name="role">
+                <label class="form-check-label" for="cloud_producer">
+                    I am a cloud producer (creator of strain clouds)
                 </label>
             </div>
             <button type="submit" class="btn btn-primary">Signup</button>
