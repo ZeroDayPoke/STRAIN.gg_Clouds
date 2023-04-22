@@ -303,13 +303,14 @@ document.addEventListener("DOMContentLoaded", function() {
 
 function filterStrains() {
   const filterType = document.getElementById("filter_type").value;
-  const filterTHC = document.getElementById("filter_thc").value;
-  const filterCBD = document.getElementById("filter_cbd").value;
+  const filterTHC = parseFloat(document.getElementById("filter_thc").value);
+  const filterCBD = parseFloat(document.getElementById("filter_cbd").value);
 
   const filteredStrains = strainsData.filter(strain => {
     const typeMatch = !filterType || strain.type === filterType;
-    const thcMatch = !filterTHC || strain.delta_nine_concentration <= filterTHC;
-    const cbdMatch = !filterCBD || strain.cbd_concentration <= filterCBD;
+    const thcMatch = isNaN(filterTHC) || strain.delta_nine_concentration >= filterTHC;
+    const cbdMatch = isNaN(filterCBD) || strain.cbd_concentration >= filterCBD;
+
     return typeMatch && thcMatch && cbdMatch;
   });
 
