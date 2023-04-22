@@ -22,7 +22,6 @@ function renderStrains() {
         <td>${strain.delta_nine_concentration}</td>
         <td>${strain.target_symptom}</td>
         <td>
-          <!-- Add buttons for update and delete actions -->
           <button class="btn btn-sm btn-warning" onclick="openUpdateStrainModal('${strain.id}')">Edit</button>
           <button class="btn btn-sm btn-danger" onclick="openDeleteStrainModal('${strain.id}')">Delete</button>
         </td>
@@ -39,7 +38,6 @@ async function submitCreateStrain(event) {
   const target_symptom = document.querySelector('#target_symptom').value;
 
   try {
-    // Replace this URL with the correct API endpoint to create a strain
     const response = await fetch('/clouds/api/strains', {
       method: 'POST',
       headers: {
