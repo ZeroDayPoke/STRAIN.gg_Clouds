@@ -21,24 +21,32 @@ function renderStrains() {
 
   strainsData.forEach((strain, index) => {
     const strainCard = `
-      <div class="col-md-6 mb-4">
-        <div class="strain-card">
-          <img src="/static/images/strain_images/${strain.image_filename}" alt="${strain.name}" class="strain-image">
-          <h3>${strain.name}</h3>
-          <p>Type: ${strain.type}</p>
-          <p>Delta-9 Concentration: ${strain.delta_nine_concentration}</p>
-          <p>CBD Concentration: ${strain.cbd_concentration}</p>
-          <p>Terpene Profile: ${strain.terpene_profile}</p>
-          <p>Effects: ${strain.effects}</p>
-          <p>Uses: ${strain.uses}</p>
-          <p>Flavor: ${strain.flavor}</p>
-          <div class="strain-card-buttons">
-            <button class="btn btn-sm btn-warning" onclick="openUpdateStrainModal('${strain.id}')">Edit</button>
-            <button class="btn btn-sm btn-danger" onclick="openDeleteStrainModal('${strain.id}')">Delete</button>
-            <button class="btn btn-sm btn-success" onclick="addToFavorites('${strain.id}')">Save to Favorites</button>
+    <div class="col-md-6 mb-4">
+      <div class="strain-card">
+        <div class="row">
+          <div class="col-md-6">
+            <img src="/static/images/strain_images/${strain.image_filename}" alt="${strain.name}" class="strain-image">
+            <div class="strain-concentrations">
+              <p>Delta-9 Concentration: ${strain.delta_nine_concentration}</p>
+              <p>CBD Concentration: ${strain.cbd_concentration}</p>
+            </div>
+            <div class="strain-card-buttons">
+              <button class="btn btn-sm btn-warning" onclick="openUpdateStrainModal('${strain.id}')">Edit</button>
+              <button class="btn btn-sm btn-danger" onclick="openDeleteStrainModal('${strain.id}')">Delete</button>
+              <button class="btn btn-sm btn-success" onclick="addToFavorites('${strain.id}')">Save to Favorites</button>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <h3>${strain.name}</h3>
+            <p>Type: ${strain.type}</p>
+            <p>Terpene Profile: ${strain.terpene_profile}</p>
+            <p>Effects: ${strain.effects}</p>
+            <p>Uses: ${strain.uses}</p>
+            <p>Flavor: ${strain.flavor}</p>
           </div>
         </div>
-      </div>`;
+      </div>
+    </div>`;
 
     currentRow.innerHTML += strainCard;
 
