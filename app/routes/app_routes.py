@@ -1,12 +1,18 @@
 #!/usr/bin/python3
 """Routes for the app"""
+import os
 from flask import Blueprint, jsonify, request, abort
 from ..models import storage, strain, user
 from ..utils.helpers import get_json
 from flask_login import current_user
+from werkzeug.utils import secure_filename
 
 # Blueprint for the app
 app_routes = Blueprint('app_routes', __name__, url_prefix='/clouds')
+
+# Constants
+UPLOAD_FOLDER = 'app/static/images/strain_images/'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 # Helper function
 def validate_model(model, model_id):
@@ -15,6 +21,9 @@ def validate_model(model, model_id):
     if obj is None:
         abort(404)
     return obj
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def get_current_user():
     return current_user
@@ -29,9 +38,14 @@ def get_strains():
 
 @app_routes.route('/api/strains', methods=['POST'], strict_slashes=False)
 def create_strain():
-    data = get_json(['name', 'delta_nine_concentration', 'target_symptom'])
-    
-    new_strain = strain.Strain(name=data['name'], delta_nine_concentration=data['delta_nine_concentration'], target_symptom=data['target_symptom'])
+    image = request.files.get('image')
+    if image and allowed_file(image.filename):
+        filename = secure_filename(image.filename)
+        image.save(os.path.join(UPLOAD_FOLDER, filename))
+        new_strain = strain.Strain(name=request.form['name'], delta_nine_concentration=request.form['delta_nine_concentration'], target_symptom=request.form['target_symptom'], image_filename=filename)
+    else:
+        new_strain = strain.Strain(name=request.form['name'], delta_nine_concentration=request.form['delta_nine_concentration'], target_symptom=request.form['target_symptom'])
+
     new_strain.save(storage)
     return jsonify({"success": True, "strain": new_strain.to_dict()}), 201
 
@@ -40,11 +54,16 @@ def create_strain():
 def update_strain(strain_id):
     target_strain = validate_model('Strain', strain_id)
 
-    data = get_json()
+    image = request.files.get('image')
+    if image and allowed_file(image.filename):
+        filename = secure_filename(image.filename)
+        image.save(os.path.join(UPLOAD_FOLDER, filename))
+        target_strain.image_filename = filename
+
     try:
-        for key, value in data.items():
-            if key not in ['id', 'created_at', 'updated_at']:
-                setattr(target_strain, key, value)
+        target_strain.name = request.form['name']
+        target_strain.delta_nine_concentration = request.form['delta_nine_concentration']
+        target_strain.target_symptom = request.form['target_symptom']
         target_strain.save(storage)
         return jsonify({"success": True, "strain": target_strain.to_dict()}), 200
     except Exception as e:

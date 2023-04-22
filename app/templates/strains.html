@@ -16,16 +16,20 @@
 				<div class="modal-body">
 					<form id="createStrainForm">
 						<div class="mb-3">
-						<label for="name">Name</label>
-						<input type="text" class="form-control" id="name" required>
+							<label for="name">Name</label>
+							<input type="text" class="form-control" id="name" required>
 						</div>
 						<div class="mb-3">
-						<label for="delta_nine_concentration">Delta Nine Concentration</label>
-						<input type="text" class="form-control" id="delta_nine_concentration" required>
+							<label for="delta_nine_concentration">Delta Nine Concentration</label>
+							<input type="text" class="form-control" id="delta_nine_concentration" required>
 						</div>
 						<div class="mb-3">
-						<label for="target_symptom">Target Symptom</label>
-						<input type="text" class="form-control" id="target_symptom" required>
+							<label for="target_symptom">Target Symptom</label>
+							<input type="text" class="form-control" id="target_symptom" required>
+						</div>
+						<div class="mb-3">
+							<label for="image">Image</label>
+							<input type="file" class="form-control" id="image" accept="image/*" required>
 						</div>
 						<div class="modal-footer">
 						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -58,6 +62,10 @@
 						<div class="mb-3">
 							<label for="update_target_symptom">Target Symptom</label>
 							<input type="text" class="form-control" id="update_target_symptom" required>
+						</div>
+						<div class="mb-3">
+							<label for="update_image">Image</label>
+							<input type="file" class="form-control" id="update_image" accept="image/*">
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -96,6 +104,7 @@
 		<table class="table table-bordered table-striped">
 			<thead>
 				<tr>
+					<th>Image</th>
 					<th>Name</th>
 					<th>Delta Nine Concentration</th>
 					<th>Target Symptom</th>

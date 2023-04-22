@@ -8,6 +8,7 @@ class Strain(BaseModel):
     name = Column(String(128), nullable=False)
     delta_nine_concentration = Column(Float, nullable=True)
     target_symptom = Column(String(128), nullable=True)
+    image_filename = Column(String(128), nullable=True)
     users = relationship("User", secondary="user_strain_association", back_populates="favorite_strains")
 
     def __init__(self, *args, **kwargs):

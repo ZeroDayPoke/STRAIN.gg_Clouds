@@ -1,6 +1,6 @@
 let strainsData = [];
 
-// Fetch all strains
+// Function to fetch strains from the API
 async function fetchStrains() {
   try {
     const response = await fetch('/clouds/api/strains');
@@ -12,12 +12,13 @@ async function fetchStrains() {
   }
 }
 
-// Function to render the strains list
+// Function to render the strains list in DOM
 function renderStrains() {
   const strainsTableBody = document.querySelector('#strainsTableBody');
   strainsTableBody.innerHTML = strainsData
     .map((strain) => `
       <tr>
+        <td><img src="/static/images/strain_images/${strain.image_filename}" alt="${strain.name}" class="strain-image"></td>
         <td>${strain.name}</td>
         <td>${strain.delta_nine_concentration}</td>
         <td>${strain.target_symptom}</td>
@@ -26,12 +27,13 @@ function renderStrains() {
           <button class="btn btn-sm btn-danger" onclick="openDeleteStrainModal('${strain.id}')">Delete</button>
         </td>
         <td>
-        <button class="btn btn-sm btn-success" onclick="addToFavorites('${strain.id}')">Save to Favorites</button>
+          <button class="btn btn-sm btn-success" onclick="addToFavorites('${strain.id}')">Save to Favorites</button>
         </td>
       </tr>`)
     .join('');
 }
 
+// Function to add the strain to the user's favorites
 async function addToFavorites(strainId) {
   try {
     const response = await fetch(`/clouds/api/favorite_strains/${strainId}`, {
@@ -53,25 +55,30 @@ async function addToFavorites(strainId) {
   }
 }
 
-// Function to handle the form submission
+// Function to handle the CREATE form submission
 async function submitCreateStrain(event) {
   event.preventDefault();
 
-  const name = document.querySelector('#name').value;
-  const delta_nine_concentration = document.querySelector('#delta_nine_concentration').value;
-  const target_symptom = document.querySelector('#target_symptom').value;
+  // Create a FormData object to handle the image upload
+  let formData = new FormData();
+
+  // Retrieve the form inputs
+  let name = $("#name").val();
+  let deltaNineConcentration = $("#delta_nine_concentration").val();
+  let targetSymptom = $("#target_symptom").val();
+  let image = $("#image").get(0).files[0];
+
+  // Append the form inputs to the FormData object
+  formData.append("name", name);
+  formData.append("delta_nine_concentration", deltaNineConcentration);
+  formData.append("target_symptom", targetSymptom);
+  formData.append("image", image);
 
   try {
+    // Send the POST request with the FormData object
     const response = await fetch('/clouds/api/strains', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        name,
-        delta_nine_concentration,
-        target_symptom,
-      }),
+      body: formData
     });
 
     const data = await response.json();
@@ -80,7 +87,7 @@ async function submitCreateStrain(event) {
       // Update the strains data and re-render the strains list
       strainsData.push(data.strain);
       renderStrains();
-  
+
       // Close the modal and clear the form inputs
       const createStrainModal = new bootstrap.Modal(document.getElementById('createStrainModal'));
       createStrainModal.hide();
@@ -89,7 +96,7 @@ async function submitCreateStrain(event) {
       alert('Error creating strain: ' + data.message);
     }
   } catch (error) {
-    console.error('Error creating strain:', error);
+      console.error('Error creating strain:', error);
   }
 }
 
@@ -99,7 +106,7 @@ function setupCreateStrainForm() {
   createStrainForm.addEventListener('submit', submitCreateStrain);
 }
 
-// Update strain
+// Function to handle the UPDATE form submission
 async function submitUpdateStrain(event) {
   event.preventDefault();
 
@@ -108,18 +115,24 @@ async function submitUpdateStrain(event) {
   const name = document.querySelector('#update_name').value;
   const delta_nine_concentration = document.querySelector('#update_delta_nine_concentration').value;
   const target_symptom = document.querySelector('#update_target_symptom').value;
+  const image = document.querySelector('#update_image').files[0];
+
+  // Create a FormData object to handle the image upload
+  let formData = new FormData();
+
+  // Append the form inputs to the FormData object
+  formData.append("name", name);
+  formData.append("delta_nine_concentration", delta_nine_concentration);
+  formData.append("target_symptom", target_symptom);
+  if (image) {
+    formData.append("image", image);
+  }
 
   try {
+    // Send the PUT request with the FormData object
     const response = await fetch(`/clouds/api/strains/${strainId}`, {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        name,
-        delta_nine_concentration,
-        target_symptom,
-      }),
+      body: formData,
     });
 
     const data = await response.json();
@@ -151,7 +164,7 @@ function setupUpdateStrainForm() {
   updateStrainForm.addEventListener('submit', submitUpdateStrain);
 }
 
-// Delete strain
+// Function to handle the DELETE form submission
 async function deleteStrain(strainId) {
   try {
     const response = await fetch(`/clouds/api/strains/${strainId}`, {
@@ -185,6 +198,7 @@ function setupOpenCreateStrainModalButton() {
   });
 }
 
+// Function to open the delete strain modal
 function openDeleteStrainModal(strainId) {
   const deleteStrainModalElement = document.getElementById('deleteStrainModal');
   const deleteStrainModal = new bootstrap.Modal(deleteStrainModalElement);
@@ -199,6 +213,7 @@ function openDeleteStrainModal(strainId) {
   deleteStrainModal.show();
 }
 
+// Function to open the update strain modal
 function openUpdateStrainModal(strainId) {
   const updateStrainModalElement = document.getElementById('updateStrainModal');
   const updateStrainModal = new bootstrap.Modal(updateStrainModalElement);
