@@ -68,12 +68,14 @@ def stores():
     all_dispensaries = storage.all('Store').values()
     if current_user.is_authenticated:
         role = current_user.role
+        user_id = current_user.id
     else:
         role = UserRole.CLOUD_GUEST
+        user_id = 'NA'
     # Pass the stores data
     return render_template('stores.html', stores=all_dispensaries, user_role=role.value,
                            user_roles={key: value.value for key, value in UserRole.__members__.items()},
-                           user_id = current_user.id)
+                           user_id = user_id)
 
 
 @web_routes.route('/', methods=['GET'], strict_slashes=False)
