@@ -73,10 +73,18 @@
 				<div class="alert alert-danger">{{ message }}</div>
 			{% endfor %}
 			{% block content %}{% endblock %}
+			<!-- Pass Role to JS-->
+			{% if user_role %}
+				<script>
+					const userRole = "{{ user_role }}";
+					const userRoles = JSON.parse('{{ user_roles | tojson | safe }}');
+				</script>
+			{% endif %}
 			<!-- jQuery first, then Popper.js, then Bootstrap JS -->
 			<script src="{{ url_for('static', filename='lib/jquery.min.js') }}"></script>
 			<script src="{{ url_for('static', filename='lib/popper.min.js') }}"></script>
 			<script src="{{ url_for('static', filename='lib/bootstrap.min.js') }}"></script>
+			<!-- Include Custom JS-->
 			<script src="{{ url_for('static', filename='scripts/richard.js') }}"></script>
 			{% block display %}STRAIN.gg{% endblock %}
 		</main>

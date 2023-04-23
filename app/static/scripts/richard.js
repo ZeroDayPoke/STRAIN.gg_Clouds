@@ -20,6 +20,12 @@ function renderStrains(strainsToRender = strainsData) {
   let currentRow = strainsContainer.querySelector(".row");
 
   strainsToRender.forEach((strain, index) => {
+    const showEditDeleteButtons = userRole === userRoles.CLOUD_PRODUCER;
+    const editDeleteButtonsHTML = showEditDeleteButtons ? `
+      <button class="btn btn-sm btn-warning" onclick="openUpdateStrainModal('${strain.id}')">Edit</button>
+      <button class="btn btn-sm btn-danger" onclick="openDeleteStrainModal('${strain.id}')">Delete</button>
+    ` : '';
+
     const strainCard = `
     <div class="col-md-6 mb-4">
       <div class="strain-card">
@@ -31,8 +37,7 @@ function renderStrains(strainsToRender = strainsData) {
               <p>CBD Concentration: ${strain.cbd_concentration}</p>
             </div>
             <div class="strain-card-buttons">
-              <button class="btn btn-sm btn-warning" onclick="openUpdateStrainModal('${strain.id}')">Edit</button>
-              <button class="btn btn-sm btn-danger" onclick="openDeleteStrainModal('${strain.id}')">Delete</button>
+              ${editDeleteButtonsHTML}
               <button class="btn btn-sm btn-success" onclick="addToFavorites('${strain.id}')">Save to Favorites</button>
             </div>
           </div>

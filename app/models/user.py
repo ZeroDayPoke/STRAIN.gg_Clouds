@@ -13,8 +13,11 @@ from enum import Enum
 
 # Define the UserRole enumeration
 class UserRole(Enum):
+    CLOUD_GUEST = 'CLOUD_GUEST'
     CLOUD_CONSUMER = 'CLOUD_CONSUMER'
     CLOUD_PRODUCER = 'CLOUD_PRODUCER'
+    CLOUD_VENDOR = 'CLOUD_VENDOR'
+    CLOUD_CHASER = 'CLOUD_CHASER'
 
 # Create the association table for users and their favorite strains
 user_strain_association = Table(
@@ -39,6 +42,9 @@ class User(BaseModel):
             pwd = kwargs.pop('password', None)
             if pwd:
                 User.__set_password(self, pwd)
+        else:
+            kwargs['role'] = UserRole.CLOUD_CONSUMER
+
         super().__init__(*args, **kwargs)
 
     def __repr__(self):

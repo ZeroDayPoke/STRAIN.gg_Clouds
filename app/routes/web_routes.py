@@ -54,9 +54,10 @@ def strains():
     if current_user.is_authenticated:
         role = current_user.role
     else:
-        role = 'anonymous'
+        role = UserRole.CLOUD_GUEST
     # Process the strains data as needed, e.g. sorting or filtering
-    return render_template('strains.html', strains=all_strains, role=role, cloud_producer_role=UserRole.CLOUD_PRODUCER)
+    return render_template('strains.html', strains=all_strains, user_role=role.value,
+                           user_roles={key: value.value for key, value in UserRole.__members__.items()})
 
 
 @web_routes.route('/', methods=['GET'], strict_slashes=False)
@@ -96,7 +97,14 @@ def signup():
         username = request.form.get('username')
         email = request.form.get('email')
         password = request.form.get('password')
-        role = UserRole.CLOUD_PRODUCER if request.form.get('role') == str(UserRole.CLOUD_PRODUCER.value) else UserRole.CLOUD_CONSUMER
+        role_value = request.form.get('role')
+
+        if role_value == str(UserRole.CLOUD_PRODUCER.value):
+            role = UserRole.CLOUD_PRODUCER
+        elif role_value == str(UserRole.CLOUD_VENDOR.value):
+            role = UserRole.CLOUD_VENDOR
+        else:
+            role = UserRole.CLOUD_CONSUMER
 
         # Check if a user with the same username already exists
         all_users = storage.all(user.User).values()
