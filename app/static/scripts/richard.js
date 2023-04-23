@@ -20,8 +20,10 @@ function renderStrains(strainsToRender = strainsData) {
   let currentRow = strainsContainer.querySelector(".row");
 
   strainsToRender.forEach((strain, index) => {
-    const showEditDeleteButtons = userRole === userRoles.CLOUD_PRODUCER;
-    const editDeleteButtonsHTML = showEditDeleteButtons ? `
+    const isCloudProducer = userRole === userRoles.CLOUD_PRODUCER;
+    const isCloudAdmin = userRole === userRoles.CLOUD_ADMIN;
+    const isCloudVendor = userRole === userRoles.CLOUD_VENDOR;
+    const editDeleteButtonsHTML = (isCloudProducer || isCloudAdmin || isCloudVendor) ? `
       <button class="btn btn-sm btn-warning" onclick="openUpdateStrainModal('${strain.id}')">Edit</button>
       <button class="btn btn-sm btn-danger" onclick="openDeleteStrainModal('${strain.id}')">Delete</button>
     ` : '';
