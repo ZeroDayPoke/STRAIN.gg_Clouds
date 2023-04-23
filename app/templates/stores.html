@@ -5,7 +5,8 @@
 {% endblock %}
 
 {% block script %}
-  <script src="{{ url_for('static', filename='scripts/stores.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/stores.js') }}">
+  </script>
 {% endblock %}
 
 {% block content %}
@@ -98,12 +99,36 @@
 			</div>
 		</div>
 	</div>
+	<!-- Add Strain Modal -->
+	<div class="modal fade" id="addStrainModal" tabindex="-1" aria-labelledby="addStrainModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+			<h5 class="modal-title" id="addStrainModalLabel">Add Strain to Store</h5>
+			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+			<form id="addStrainForm">
+				<input type="hidden" id="store-id-input">
+				<div class="mb-3">
+				<label for="strain-id-input">Strain ID:</label>
+				<input type="text" class="form-control" id="strain-id-input">
+				</div>
+				<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				<button type="submit" class="btn btn-primary">Add Strain</button>
+				</div>
+			</form>
+			</div>
+		</div>
+		</div>
+	</div>
 {% endblock %}
 {% block display %}
   <div class="container">
     <h1 class="text-center mt-5 mb-5">Dispensaries</h1>
     <div class="row mb-3">
-      {% if user_role == 'CLOUD_PRODUCER' %}
+      {% if user_role == "CLOUD_VENDOR" %}
         <div class="col-md-12 text-center">
           <button class="btn btn-primary" id="openCreateStoreModal">Create Store</button>
         </div>

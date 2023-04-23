@@ -13,3 +13,8 @@ class Store(BaseModel):
 
     owner = relationship("User", back_populates="stores")
     strains = relationship("Strain", secondary="strain_store", back_populates="stores")
+
+    def add_strain(self, strain_obj):
+        """Add a strain to the store"""
+        if strain_obj not in self.strains:
+            self.strains.append(strain_obj)

@@ -185,3 +185,24 @@ def get_store(store_id):
     """api route to get a store"""
     target_store = validate_model('Store', store_id)
     return jsonify({"success": True, "store": target_store.to_dict()})
+
+@app_routes.route('/api/stores/<store_id>/strains', methods=['PUT'], strict_slashes=False)
+def add_strain_to_store(store_id):
+    """api route to add a strain to a store"""
+    target_store = validate_model('Store', store_id)
+    strain_id = request.form['strain_id']
+    target_strain = validate_model('Strain', strain_id)
+
+    try:
+        target_store.add_strain(target_strain)
+        target_store.save(storage)
+        return jsonify({"success": True, "store": target_store.to_dict()}), 201
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 400
+
+@app_routes.route('/api/stores/<store_id>/strains', methods=['GET'], strict_slashes=False)
+def get_strains_in_store(store_id):
+    """api route to get all strains in a store"""
+    target_store = validate_model('Store', store_id)
+    strains_in_store = [strain.to_dict() for strain in target_store.strains]
+    return jsonify(strains_in_store)

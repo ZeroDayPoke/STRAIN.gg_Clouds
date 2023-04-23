@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupCreateStoreForm();
   setupUpdateStoreForm();
   setupOpenCreateStoreModalButton();
+  setupAddStrainForm();
 });
 
 async function fetchStores() {
@@ -25,7 +26,7 @@ function renderStores(storesToRender = storesData) {
 
   let currentRow = storesContainer.querySelector(".row");
 
-  storesToRender.forEach((store, index) => {
+  storesToRender.forEach(async (store, index) => {
     // You may need to modify the following HTML to match the properties of the Store model
     const storeCard = `
     <div class="col-md-6 mb-4">
@@ -37,11 +38,23 @@ function renderStores(storesToRender = storesData) {
         <div class="store-card-buttons">
           <button class="btn btn-sm btn-warning" onclick="openUpdateStoreModal('${store.id}')">Edit</button>
           <button class="btn btn-sm btn-danger" onclick="openDeleteStoreModal('${store.id}')">Delete</button>
+          <button class="btn btn-primary mt-2" onclick="showAddStrainForm('${store.id}')">>Add Strain</button>
+          <div class="dropdown">
+          <button class="btn btn-primary dropdown-toggle" type="button" id="strainDropdown-${store.id}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Strains
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="strainDropdown-${store.id}" id="strainList-${store.id}">
+            <!-- The strains will be populated here by the populateStrainDropdown function -->
+          </ul>
+          </div>
         </div>
       </div>
     </div>`;
 
     currentRow.innerHTML += storeCard;
+
+    // Populate the strain dropdown for the current store
+    await populateStrainDropdown(store.id);
 
     // Create a new row for every two store cards
     if (index % 2 === 1) {
@@ -225,5 +238,79 @@ async function deleteStore(storeId) {
     }
   } catch (error) {
     console.error('Error deleting Store:', error);
+  }
+}
+
+async function getStrainsByStoreId(storeId) {
+  // Replace this with the actual API call to fetch strains for a given store
+  const response = await fetch(`/clouds/api/stores/${storeId}/strains`);
+  const strains = await response.json();
+  return strains;
+}
+
+// Function to populate the strain dropdown for the current store
+async function populateStrainDropdown(storeId) {
+  // Fetch the strains for the given store
+  const strains = await getStrainsByStoreId(storeId);
+
+  // Get the dropdown menu element
+  const strainList = document.getElementById(`strainList-${storeId}`);
+
+  // Clear the existing strains from the dropdown
+  strainList.innerHTML = '';
+
+  // Add each strain to the dropdown menu
+  strains.forEach((strain) => {
+    const listItem = document.createElement('li');
+    listItem.innerHTML = `<a class="dropdown-item" href="#" data-strain-id="${strain.id}">${strain.name}</a>`;
+    strainList.appendChild(listItem);
+  });
+}
+
+// Function to show the add strain form
+function showAddStrainForm(storeId) {
+  document.getElementById('store-id-input').value = storeId;
+  const addStrainModal = new bootstrap.Modal(document.getElementById('addStrainModal'));
+  addStrainModal.show();
+}
+
+// Event listener for Add Strain Form
+function setupAddStrainForm() {
+  const addStrainForm = document.querySelector('#addStrainForm');
+  addStrainForm.addEventListener('submit', submitAddStrainForm);
+}
+
+// Function to handle the ADD STRAIN form submission
+async function submitAddStrainForm(event) {
+  event.preventDefault();
+
+  const storeId = document.getElementById('store-id-input').value;
+  const strainId = document.getElementById('strain-id-input').value;
+
+  let formData = new FormData();
+  formData.append("store_id", storeId);
+  formData.append("strain_id", strainId);
+  try {
+    // Send the PUT request with the FormData object
+    const response = await fetch(`/clouds/api/stores/${storeId}/strains`, {
+      method: 'PUT',
+      body: formData,
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      // Refresh the strain dropdown for the store
+      await populateStrainDropdown(storeId);
+
+      // Close the modal and clear the form inputs
+      const addStrainModal = new bootstrap.Modal(document.getElementById('addStrainModal'));
+      addStrainModal.hide();
+      document.querySelector('#addStrainForm').reset();
+    } else {
+      alert('Error adding strain: ' + data.message);
+    }
+  } catch (error) {
+    console.error('Error adding strain:', error);
   }
 }
