@@ -16,14 +16,21 @@
 
 		<!-- Bootstrap CSS -->
 		<link href="{{ url_for('static', filename='lib/bootstrap.min.css') }}" rel="stylesheet">
+<div class="container">
+  <img src="{{ url_for('static', filename='images/header.png') }}"
+       alt="Logo"
+       width="auto"
+       height="200"
+       class="img-responsive img-rounded mx-auto d-block">
+</div>
 		<title>{% block title %}STRAIN.gg{% endblock %}</title>
 
 		<!-- Richard CSS -->
 		<link href="{{ url_for('static', filename='styles/richard.css') }}" rel="stylesheet">
 	</head>
-	<body>
+	<body class="bg-dark">
 		<header>
-			<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			<nav class="navbar navbar-expand-lg navbar-light bg-success">
 				<a class="navbar-brand" href="#">
 					<img src="{{ url_for('static', filename='images/header.png') }}"
 					alt="Logo" width="auto" height="30">
@@ -99,29 +106,29 @@
 			<script src="{{ url_for('static', filename='lib/bootstrap_two.js') }}"></script>
 			{% block display %}STRAIN.gg{% endblock %}
 		</main>
-		<footer class="bg-light mt-5 py-4">
+		<footer class="bg-dark mt-3 py-2">
 			<div class="container">
 				<div class="row">
 					<div class="col-md-4">
-						<h5>About Us</h5>
-						<p>We are cinder demons</p>
+						<h5 class="text-white medium">About Us</h5>
+						<p class="text-white small">We are here to help you in your journey</p>
 					</div>
 					<div class="col-md-4">
-						<h5>Quick Links</h5>
+						<h5 class="text-white small">Quick Links</h5>
 						<ul class="list-unstyled">
-							<li><a href="{{ url_for('web_routes.index') }}">Home</a></li>
+							<li><a href="{{ url_for('web_routes.index') }}" class="text-success">Home</a></li>
 						</ul>
 					</div>
 					<div class="col-md-4">
-						<h5>Contact Us</h5>
-						<p>Email: Coming Soon</p>
-						<p>Phone: Coming Soon</p>
+						<h5 class="text-white small">Contact Us</h5>
+						<p class="text-white small">Email: Coming Soon</p>
+						<p class="text-white small">Phone: Coming Soon</p>
 					</div>
 				</div>
 				<div class="row mt-3">
 					<div class="col text-center">
-						<p>&copy; 2023 Strain.gg. All rights reserved.</p>
-						<p>
+						<p class="text-white small">&copy; 2023 Strain.gg. All rights reserved.</p>
+						<p class="text-white small">
 							The information provided on this website is for entertainment and general 
 							informational purposes only and should not be relied upon for making any medical 
 							decisions. While we strive to ensure the accuracy of the content, we make no 
