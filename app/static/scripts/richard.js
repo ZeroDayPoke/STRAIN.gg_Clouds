@@ -13,29 +13,51 @@ async function fetchStrains() {
 }
 
 // Function to render the strains list in DOM
-function renderStrains() {
-  const strainsTableBody = document.querySelector('#strainsTableBody');
-  strainsTableBody.innerHTML = strainsData
-    .map((strain) => `
-      <tr>
-        <td><img src="/static/images/strain_images/${strain.image_filename}" alt="${strain.name}" class="strain-image"></td>
-        <td>${strain.name}</td>
-        <td>${strain.type}</td>
-        <td>${strain.delta_nine_concentration}</td>
-        <td>${strain.cbd_concentration}</td>
-        <td>${strain.terpene_profile}</td>
-        <td>${strain.effects}</td>
-        <td>${strain.uses}</td>
-        <td>${strain.flavor}</td>
-        <td>
-          <button class="btn btn-sm btn-warning" onclick="openUpdateStrainModal('${strain.id}')">Edit</button>
-          <button class="btn btn-sm btn-danger" onclick="openDeleteStrainModal('${strain.id}')">Delete</button>
-        </td>
-        <td>
-          <button class="btn btn-sm btn-success" onclick="addToFavorites('${strain.id}')">Save to Favorites</button>
-        </td>
-      </tr>`)
-    .join('');
+function renderStrains(strainsToRender = strainsData) {
+  const strainsContainer = document.querySelector('#strainsContainer');
+  strainsContainer.innerHTML = '<div class="row"></div>';
+
+  let currentRow = strainsContainer.querySelector(".row");
+
+  strainsToRender.forEach((strain, index) => {
+    const strainCard = `
+    <div class="col-md-6 mb-4">
+      <div class="strain-card">
+        <div class="row">
+          <div class="col-md-6">
+            <img src="/static/images/strain_images/${strain.image_filename}" alt="${strain.name}" class="strain-image">
+            <div class="strain-concentrations">
+              <p>Delta-9 Concentration: ${strain.delta_nine_concentration}</p>
+              <p>CBD Concentration: ${strain.cbd_concentration}</p>
+            </div>
+            <div class="strain-card-buttons">
+              <button class="btn btn-sm btn-warning" onclick="openUpdateStrainModal('${strain.id}')">Edit</button>
+              <button class="btn btn-sm btn-danger" onclick="openDeleteStrainModal('${strain.id}')">Delete</button>
+              <button class="btn btn-sm btn-success" onclick="addToFavorites('${strain.id}')">Save to Favorites</button>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <h3>${strain.name}</h3>
+            <p>Type: ${strain.type}</p>
+            <p>Terpene Profile: ${strain.terpene_profile}</p>
+            <p>Effects: ${strain.effects}</p>
+            <p>Uses: ${strain.uses}</p>
+            <p>Flavor: ${strain.flavor}</p>
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+    currentRow.innerHTML += strainCard;
+
+    // Create a new row for every two strain cards
+    if (index % 2 === 1) {
+      const newRow = document.createElement("div");
+      newRow.className = "row";
+      strainsContainer.appendChild(newRow);
+      currentRow = newRow;
+    }
+  });
 }
 
 // Function to add the strain to the user's favorites
@@ -264,3 +286,33 @@ document.addEventListener('DOMContentLoaded', () => {
   setupUpdateStrainForm();
   setupOpenCreateStrainModalButton();
 });
+
+//Filtering
+document.addEventListener("DOMContentLoaded", function() {
+  // Filtering
+  document.getElementById("filter_type").addEventListener("change", filterStrains);
+  document.getElementById("filter_thc").addEventListener("input", function() {
+    document.getElementById("thc_value").innerText = this.value + '%';
+    filterStrains();
+  });
+  document.getElementById("filter_cbd").addEventListener("input", function() {
+    document.getElementById("cbd_value").innerText = this.value + '%';
+    filterStrains();
+  });
+});
+
+function filterStrains() {
+  const filterType = document.getElementById("filter_type").value;
+  const filterTHC = parseFloat(document.getElementById("filter_thc").value);
+  const filterCBD = parseFloat(document.getElementById("filter_cbd").value);
+
+  const filteredStrains = strainsData.filter(strain => {
+    const typeMatch = !filterType || strain.type === filterType;
+    const thcMatch = isNaN(filterTHC) || strain.delta_nine_concentration >= filterTHC;
+    const cbdMatch = isNaN(filterCBD) || strain.cbd_concentration >= filterCBD;
+
+    return typeMatch && thcMatch && cbdMatch;
+  });
+
+  renderStrains(filteredStrains);
+}

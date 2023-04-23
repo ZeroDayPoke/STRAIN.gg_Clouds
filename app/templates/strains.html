@@ -138,32 +138,38 @@
 {% block display %}
   <div class="container">
     <h1 class="text-center mt-5 mb-5">Strains</h1>
-    <div class="row">
-      <div class="col-md-12">
-		{% if role == cloud_producer_role %}
-    		<button class="btn btn-primary mb-3" id="openCreateStrainModal">Create Strain</button>
-		{% endif %}
-		<table class="table table-bordered table-striped">
-			<thead>
-				<tr>
-					<th>Image</th>
-					<th>Type</th>
-					<th>Name</th>
-					<th>THC Concentration</th>
-					<th>CBD Concentration</th>
-					<th>Terpene Profile</th>
-					<th>Effects</th>
-					<th>Uses</th>
-					<th>Flavor</th>
-					<th>Actions</th>
-					<th>Save to Favorites</th>
-				</tr>
-			</thead>
-			<tbody id="strainsTableBody">
-				<!-- Strains and Save to Favorites buttons added dynamically using JavaScript -->
-			</tbody>
-		</table>
+    <div class="row mb-3">
+      {% if role == cloud_producer_role %}
+        <div class="col-md-12 text-center">
+          <button class="btn btn-primary" id="openCreateStrainModal">Create Strain</button>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Filters -->
+    <div class="row mb-3">
+      <div class="col">
+        <label for="filter_type">Type</label>
+        <select class="form-select" id="filter_type">
+          <option value="">All</option>
+          <option value="Sativa">Sativa</option>
+          <option value="Indica">Indica</option>
+          <option value="Hybrid">Hybrid</option>
+        </select>
       </div>
+      <div class="col">
+        <label for="filter_thc">THC Concentration</label>
+        <input type="range" class="form-range" min="0" max="100" step="1" id="filter_thc">
+        <span id="thc_value">0%</span>
+      </div>
+      <div class="col">
+        <label for="filter_cbd">CBD Concentration</label>
+        <input type="range" class="form-range" min="0" max="100" step="1" id="filter_cbd">
+        <span id="cbd_value">0%</span>
+      </div>
+    </div>
+
+    <div id="strainsContainer">
     </div>
   </div>
 {% endblock %}
