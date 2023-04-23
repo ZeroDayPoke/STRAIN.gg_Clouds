@@ -29,9 +29,6 @@ These instructions will get you a copy of the project up and running on your loc
 ```cd STRAIN.gg_Clouds```
 ```pip3 install -r requirements.txt```
 
-3. Install frontend libraries:
-```npm install```
-
 4. Set environment variables:
 ```export FLASK_APP=app/main.py```
 ```export FLASK_DEBUG=1```
@@ -47,6 +44,8 @@ These instructions will get you a copy of the project up and running on your loc
 
 
 Open your browser and visit `http://127.0.0.1:5000` to access the application.
+
+Note: Frontend libraries like Bootstrap, jQuery, and Popper.js are included in the 'app/static/lib' directory.
 
 ## Built With
 
