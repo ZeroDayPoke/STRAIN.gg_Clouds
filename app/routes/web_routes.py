@@ -46,6 +46,7 @@ def load_user(user_id):
 
 # Define the routes for the web views
 
+
 @web_routes.route('/strains', methods=['GET'], strict_slashes=False)
 @nocache
 def strains():
@@ -55,8 +56,22 @@ def strains():
         role = current_user.role
     else:
         role = UserRole.CLOUD_GUEST
-    # Process the strains data as needed, e.g. sorting or filtering
+    # Pass the strains data
     return render_template('strains.html', strains=all_strains, user_role=role.value,
+                           user_roles={key: value.value for key, value in UserRole.__members__.items()})
+
+
+@web_routes.route('/stores', methods=['GET'], strict_slashes=False)
+@nocache
+def stores():
+    """Return stores page"""
+    all_dispensaries = storage.all('Store').values()
+    if current_user.is_authenticated:
+        role = current_user.role
+    else:
+        role = UserRole.CLOUD_GUEST
+    # Pass the stores data
+    return render_template('stores.html', stores=all_dispensaries, user_role=role.value,
                            user_roles={key: value.value for key, value in UserRole.__members__.items()})
 
 

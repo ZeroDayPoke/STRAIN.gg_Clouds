@@ -35,6 +35,7 @@ class User(BaseModel):
     password = Column(String(128), nullable=False)
     role = Column(ChoiceType(UserRole, impl=String(20)), default=UserRole.CLOUD_CONSUMER, nullable=False)
     favorite_strains = relationship("Strain", secondary=user_strain_association, back_populates="users")
+    stores = relationship("Store", back_populates="owner")
 
     def __init__(self, *args, **kwargs):
         """creates new User"""

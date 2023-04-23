@@ -2,7 +2,7 @@
 """Routes for the app"""
 import os
 from flask import Blueprint, jsonify, request, abort, redirect, url_for
-from ..models import storage, strain, user
+from ..models import storage, strain, user, store
 from ..utils.helpers import get_json
 from flask_login import current_user
 from werkzeug.utils import secure_filename
@@ -139,3 +139,50 @@ def create_favorite_strain(strain_id):
         return jsonify({"success": True, "strain": target_strain.to_dict()}), 201
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 400
+
+"""Store routes"""
+
+@app_routes.route('/api/stores', methods=['GET'], strict_slashes=False)
+def get_stores():
+    """api route to get all stores"""
+    stores = storage.all('Store')
+    return jsonify([store.to_dict() for store in stores.values()])
+
+@app_routes.route('/api/stores', methods=['POST'], strict_slashes=False)
+def create_store():
+    """api route to create a store"""
+    new_store = store.Store(name=request.form['name'],
+                            location=request.form['location'],
+                            operating_hours=request.form['operating_hours'],
+                            owner_id=request.form['owner_id'])
+    new_store.save(storage)
+    return jsonify({"success": True, "store": new_store.to_dict()}), 201
+
+@app_routes.route('/api/stores/<store_id>', methods=['PUT'], strict_slashes=False)
+def update_store(store_id):
+    """api route to update a store"""
+    target_store = validate_model('Store', store_id)
+
+    try:
+        target_store.name = request.form['name']
+        target_store.location = request.form['location']
+        target_store.operating_hours = request.form['operating_hours']
+        target_store.owner_id = request.form['owner_id']
+        target_store.save(storage)
+        return jsonify({"success": True, "store": target_store.to_dict()}), 200
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 400
+
+@app_routes.route('/api/stores/<store_id>', methods=['DELETE'], strict_slashes=False)
+def delete_store(store_id):
+    """api route to delete a store"""
+    target_store = validate_model('Store', store_id)
+    storage.delete(target_store)
+    storage.save()
+    return jsonify({"success": True}), 200
+
+@app_routes.route('/api/stores/<store_id>', methods=['GET'], strict_slashes=False)
+def get_store(store_id):
+    """api route to get a store"""
+    target_store = validate_model('Store', store_id)
+    return jsonify({"success": True, "store": target_store.to_dict()})
