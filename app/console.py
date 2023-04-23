@@ -1,13 +1,13 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import csv
 import cmd
-from models import storage
-from models.user import User
-from models.strain import Strain
+from . import storage
+from app.models.user import User
+from app.models.strain import Strain
 
 class StrainConsole(cmd.Cmd):
     prompt = '(STRAIN.gg) '

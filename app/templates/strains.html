@@ -4,6 +4,10 @@
     Strains
 {% endblock %}
 
+{% block script %}
+  <script src="{{ url_for('static', filename='scripts/strains.js') }}"></script>
+{% endblock %}
+
 {% block content %}
 	<!-- Create Strain Modal -->
 	<div class="modal fade" id="createStrainModal" tabindex="-1" aria-labelledby="createStrainModalLabel" aria-hidden="true">

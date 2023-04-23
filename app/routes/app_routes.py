@@ -167,7 +167,6 @@ def update_store(store_id):
         target_store.name = request.form['name']
         target_store.location = request.form['location']
         target_store.operating_hours = request.form['operating_hours']
-        target_store.owner_id = request.form['owner_id']
         target_store.save(storage)
         return jsonify({"success": True, "store": target_store.to_dict()}), 200
     except Exception as e:

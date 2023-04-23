@@ -72,7 +72,8 @@ def stores():
         role = UserRole.CLOUD_GUEST
     # Pass the stores data
     return render_template('stores.html', stores=all_dispensaries, user_role=role.value,
-                           user_roles={key: value.value for key, value in UserRole.__members__.items()})
+                           user_roles={key: value.value for key, value in UserRole.__members__.items()},
+                           user_id = current_user.id)
 
 
 @web_routes.route('/', methods=['GET'], strict_slashes=False)

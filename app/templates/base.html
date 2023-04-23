@@ -84,17 +84,17 @@
 				<script>
 					const userRole = "{{ user_role }}";
 					const userRoles = JSON.parse('{{ user_roles | tojson | safe }}');
+					const userId = "{{ user_id }}";
 				</script>
 			{% endif %}
 			<script>
 				const signInUrl = "{{ url_for('web_routes.signin') }}";
 			</script>
+			{% block script %}{% endblock %}
 			<!-- jQuery first, then Popper.js, then Bootstrap JS -->
 			<script src="{{ url_for('static', filename='lib/jquery.min.js') }}"></script>
 			<script src="{{ url_for('static', filename='lib/popper.min.js') }}"></script>
 			<script src="{{ url_for('static', filename='lib/bootstrap.min.js') }}"></script>
-			<!-- Include Custom JS-->
-			<script src="{{ url_for('static', filename='scripts/richard.js') }}"></script>
 			{% block display %}STRAIN.gg{% endblock %}
 		</main>
 		<footer class="bg-light mt-5 py-4">
