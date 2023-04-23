@@ -4,6 +4,7 @@ import os
 # Set the base directory for the app
 class Config:
     JSONIFY_PRETTYPRINT_REGULAR = True
+    SECRET_KEY = 'supersecretkey'
 
 # Set the development configuration
 class DevelopmentConfig(Config):

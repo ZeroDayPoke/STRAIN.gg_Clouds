@@ -54,6 +54,12 @@
 						<li class="nav-item">
 							<a class="nav-link" href="/clouds/strains">Strains</a>
 						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="/clouds/stores">Stores</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="/clouds/faq">FAQ</a>
+						</li>
 					</ul>
 					<ul class="navbar-nav nav-account">
 						{% if not current_user.is_authenticated %}
@@ -80,11 +86,24 @@
 				<div class="alert alert-danger">{{ message }}</div>
 			{% endfor %}
 			{% block content %}{% endblock %}
+			<!-- Pass Role to JS-->
+			{% if user_role %}
+				<script>
+					const userRole = "{{ user_role }}";
+					const userRoles = JSON.parse('{{ user_roles | tojson | safe }}');
+					const userId = "{{ user_id }}";
+				</script>
+			{% endif %}
+			<script>
+				const signInUrl = "{{ url_for('web_routes.signin') }}";
+			</script>
+			{% block script %}{% endblock %}
 			<!-- jQuery first, then Popper.js, then Bootstrap JS -->
 			<script src="{{ url_for('static', filename='lib/jquery.min.js') }}"></script>
 			<script src="{{ url_for('static', filename='lib/popper.min.js') }}"></script>
 			<script src="{{ url_for('static', filename='lib/bootstrap.min.js') }}"></script>
-			<script src="{{ url_for('static', filename='scripts/richard.js') }}"></script>
+			<script src="{{ url_for('static', filename='lib/popper_two.js') }}"></script>
+			<script src="{{ url_for('static', filename='lib/bootstrap_two.js') }}"></script>
 			{% block display %}STRAIN.gg{% endblock %}
 		</main>
 		<footer class="bg-dark mt-3 py-2">
