@@ -139,7 +139,7 @@
   <div class="container">
     <h1 class="text-center mt-5 mb-5">Strains</h1>
     <div class="row mb-3">
-      {% if role == cloud_producer_role %}
+      {% if user_role == 'CLOUD_PRODUCER' %}
         <div class="col-md-12 text-center">
           <button class="btn btn-primary" id="openCreateStrainModal">Create Strain</button>
         </div>
@@ -168,7 +168,6 @@
         <span id="cbd_value">0%</span>
       </div>
     </div>
-
     <div id="strainsContainer">
     </div>
   </div>

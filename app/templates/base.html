@@ -80,6 +80,9 @@
 					const userRoles = JSON.parse('{{ user_roles | tojson | safe }}');
 				</script>
 			{% endif %}
+			<script>
+				const signInUrl = "{{ url_for('web_routes.signin') }}";
+			</script>
 			<!-- jQuery first, then Popper.js, then Bootstrap JS -->
 			<script src="{{ url_for('static', filename='lib/jquery.min.js') }}"></script>
 			<script src="{{ url_for('static', filename='lib/popper.min.js') }}"></script>

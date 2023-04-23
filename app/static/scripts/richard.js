@@ -21,12 +21,18 @@ function renderStrains(strainsToRender = strainsData) {
 
   strainsToRender.forEach((strain, index) => {
     const isCloudProducer = userRole === userRoles.CLOUD_PRODUCER;
-    const isCloudAdmin = userRole === userRoles.CLOUD_ADMIN;
+    const isCloudChaser = userRole === userRoles.CLOUD_CHASER;
     const isCloudVendor = userRole === userRoles.CLOUD_VENDOR;
-    const editDeleteButtonsHTML = (isCloudProducer || isCloudAdmin || isCloudVendor) ? `
+    const isCloudConsumer = userRole === userRoles.CLOUD_CONSUMER;
+    const editDeleteButtonsHTML = (isCloudProducer || isCloudChaser || isCloudVendor) ? `
       <button class="btn btn-sm btn-warning" onclick="openUpdateStrainModal('${strain.id}')">Edit</button>
       <button class="btn btn-sm btn-danger" onclick="openDeleteStrainModal('${strain.id}')">Delete</button>
     ` : '';
+    const addFavoritesButtonHTML = (isCloudChaser || isCloudConsumer || isCloudProducer || isCloudVendor) ? `
+      <button class="btn btn-sm btn-success" onclick="addToFavorites('${strain.id}')">Save to Favorites</button>
+    ` : `
+      <a href="${signInUrl}" class="btn btn-primary">Sign In to use Favorites</a>
+    `;
 
     const strainCard = `
     <div class="col-md-6 mb-4">
@@ -40,7 +46,7 @@ function renderStrains(strainsToRender = strainsData) {
             </div>
             <div class="strain-card-buttons">
               ${editDeleteButtonsHTML}
-              <button class="btn btn-sm btn-success" onclick="addToFavorites('${strain.id}')">Save to Favorites</button>
+              ${addFavoritesButtonHTML}
             </div>
           </div>
           <div class="col-md-6">
