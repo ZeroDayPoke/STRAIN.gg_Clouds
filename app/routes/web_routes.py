@@ -66,6 +66,13 @@ def index():
     return render_template('index.html')
 
 
+@web_routes.route('/faq', methods=['GET'], strict_slashes=False)
+@nocache
+def faq():
+    """Return FAQ page"""
+    return render_template('faq.html')
+
+
 @web_routes.route('/about', methods=['GET'], strict_slashes=False)
 @nocache
 def about():
@@ -169,6 +176,7 @@ def account(user_id):
 
 
 @web_routes.route('/remove_favorite', methods=['POST'])
+@nocache
 @login_required
 def remove_favorite():
     """route to remove a favorite strain from the user's favorites"""
