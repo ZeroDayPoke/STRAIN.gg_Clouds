@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 """Routes for the app"""
 import os
-from flask import Blueprint, jsonify, request, abort
-from ..models import storage, strain, user
+from flask import Blueprint, jsonify, request, abort, redirect, url_for
+from ..models import storage, strain, user, store
 from ..utils.helpers import get_json
 from flask_login import current_user
 from werkzeug.utils import secure_filename
@@ -15,6 +15,7 @@ app_routes = Blueprint('app_routes', __name__, url_prefix='/clouds')
 UPLOAD_FOLDER = 'app/static/images/strain_images/'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
+
 # Helper function
 def validate_model(model, model_id):
     """Validate if a model exists"""
@@ -23,15 +24,19 @@ def validate_model(model, model_id):
         abort(404)
     return obj
 
+
 def allowed_file(filename):
     """Check if the file is allowed"""
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 def get_current_user():
     """Return the current user"""
     return current_user
 
+
 """Strain routes"""
+
 
 @app_routes.route('/api/strains', methods=['GET'], strict_slashes=False)
 def get_strains():
@@ -44,10 +49,10 @@ def get_strains():
 def create_strain():
     """api route to create a strain"""
     image = request.files.get('image')
-    
+
     # Set a maximum file size of 1.5 MB
     max_file_size = 1.5 * 1024 * 1024
-    
+
     if image:
         if allowed_file(image.filename):
             filename = secure_filename(image.filename)
@@ -131,6 +136,73 @@ def create_favorite_strain(strain_id):
     try:
         current_user.add_favorite_strain(target_strain)
         current_user.save(storage)
-        return jsonify({"success": True}), 200
+        return jsonify({"success": True, "strain": target_strain.to_dict()}), 201
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 400
+
+"""Store routes"""
+
+@app_routes.route('/api/stores', methods=['GET'], strict_slashes=False)
+def get_stores():
+    """api route to get all stores"""
+    stores = storage.all('Store')
+    return jsonify([store.to_dict() for store in stores.values()])
+
+@app_routes.route('/api/stores', methods=['POST'], strict_slashes=False)
+def create_store():
+    """api route to create a store"""
+    new_store = store.Store(name=request.form['name'],
+                            location=request.form['location'],
+                            operating_hours=request.form['operating_hours'],
+                            owner_id=request.form['owner_id'])
+    new_store.save(storage)
+    return jsonify({"success": True, "store": new_store.to_dict()}), 201
+
+@app_routes.route('/api/stores/<store_id>', methods=['PUT'], strict_slashes=False)
+def update_store(store_id):
+    """api route to update a store"""
+    target_store = validate_model('Store', store_id)
+
+    try:
+        target_store.name = request.form['name']
+        target_store.location = request.form['location']
+        target_store.operating_hours = request.form['operating_hours']
+        target_store.save(storage)
+        return jsonify({"success": True, "store": target_store.to_dict()}), 200
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 400
+
+@app_routes.route('/api/stores/<store_id>', methods=['DELETE'], strict_slashes=False)
+def delete_store(store_id):
+    """api route to delete a store"""
+    target_store = validate_model('Store', store_id)
+    storage.delete(target_store)
+    storage.save()
+    return jsonify({"success": True}), 200
+
+@app_routes.route('/api/stores/<store_id>', methods=['GET'], strict_slashes=False)
+def get_store(store_id):
+    """api route to get a store"""
+    target_store = validate_model('Store', store_id)
+    return jsonify({"success": True, "store": target_store.to_dict()})
+
+@app_routes.route('/api/stores/<store_id>/strains', methods=['PUT'], strict_slashes=False)
+def add_strain_to_store(store_id):
+    """api route to add a strain to a store"""
+    target_store = validate_model('Store', store_id)
+    strain_id = request.form['strain_id']
+    target_strain = validate_model('Strain', strain_id)
+
+    try:
+        target_store.add_strain(target_strain)
+        target_store.save(storage)
+        return jsonify({"success": True, "store": target_store.to_dict()}), 201
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 400
+
+@app_routes.route('/api/stores/<store_id>/strains', methods=['GET'], strict_slashes=False)
+def get_strains_in_store(store_id):
+    """api route to get all strains in a store"""
+    target_store = validate_model('Store', store_id)
+    strains_in_store = [strain.to_dict() for strain in target_store.strains]
+    return jsonify(strains_in_store)

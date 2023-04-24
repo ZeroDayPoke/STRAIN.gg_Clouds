@@ -4,7 +4,7 @@ import os
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
-from app.models import user, strain, base
+from app.models import user, strain, base, store
 
 class DBStorage:
     __engine = None
@@ -13,7 +13,8 @@ class DBStorage:
     # Dictionary to map class names to their respective model classes
     class_dictionary = {
         'Strain': strain.Strain,
-        'User': user.User
+        'User': user.User,
+        'Store': store.Store,
     }
 
     def __init__(self):

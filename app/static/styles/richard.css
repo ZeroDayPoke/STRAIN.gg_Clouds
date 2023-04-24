@@ -11,8 +11,25 @@
   background-color: #f8f9fa;
 }
 
+.strain-card {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 15px;
+  background-color: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
 .strain-image {
-  width: 100px;
+  width: 100%;
   height: auto;
-  border-radius: 5px;
+  display: block;
+  margin-bottom: 15px;
+}
+
+.strain-concentrations {
+  margin-top: 15px;
+}
+
+.strain-card-buttons {
+  margin-top: 15px;
 }
