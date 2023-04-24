@@ -17,6 +17,15 @@ web_routes = Blueprint('web_routes', __name__, url_prefix='/clouds',
 login_manager = LoginManager()
 
 
+# Helper function get or assign a user role
+def role_helper():
+    if current_user.is_authenticated:
+        role = current_user.role
+    else:
+        role = UserRole.CLOUD_GUEST
+    return role
+
+
 # Decorator to disable caching for a view
 def nocache(view):
     @wraps(view)
@@ -82,10 +91,7 @@ def stores():
 @nocache
 def index():
     """Return index page"""
-    if current_user.is_authenticated:
-        role = current_user.role
-    else:
-        role = UserRole.CLOUD_GUEST
+    role = role_helper()
     return render_template('index.html', user_role=role.value,
                            user_roles={key: value.value for key, value in UserRole.__members__.items()})
 
@@ -230,4 +236,6 @@ def remove_favorite():
 @login_required
 def presentation():
     """Return the presentation page"""
-    return render_template('presentation.html')
+    role = role_helper()
+    return render_template('presentation.html', user_role=role.value,
+                           user_roles={key: value.value for key, value in UserRole.__members__.items()})

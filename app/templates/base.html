@@ -76,6 +76,11 @@
 							<li class="nav-item">
 								<a class="nav-link" href="/clouds/signout">Sign Out</a>
 							</li>
+							{% if user_role == "CLOUD_CHASER" %}
+								<li class="nav-item">
+									<a class="nav-link" href="{{ url_for('web_routes.presentation') }}">Presentation</a>
+								</li>
+							{% endif %}
 						{% endif %}
 					</ul>
 				</div>
