@@ -1,8 +1,13 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+import csv
 import cmd
-from models import storage
-from models.user import User
-from models.strain import Strain
+from . import storage
+from app.models.user import User
+from app.models.strain import Strain
 
 class StrainConsole(cmd.Cmd):
     prompt = '(STRAIN.gg) '
@@ -98,6 +103,32 @@ class StrainConsole(cmd.Cmd):
         print("Exiting console...")
         storage.close()
         return True
+
+    def do_import(self, arg):
+        filepath = "../migrations/inbound.csv"
+        try:
+            with open(filepath, mode="r") as f:
+                reader = csv.reader(f)
+                next(reader)  # Skip header row
+                for row in reader:
+                    strain_data = {
+                        "name": row[0],
+                        "type": row[1],
+                        "delta_nine_concentration": float(row[2]),
+                        "cbd_concentration": float(row[3]),
+                        "terpene_profile": row[4],
+                        "effects": row[5],
+                        "uses": row[6],
+                        "flavor": row[7],
+                    }
+                    strain = Strain(**strain_data)
+                    storage.new(strain)
+            storage.save()
+            print("Strain data imported successfully.")
+        except FileNotFoundError:
+            print(f"File not found: {filepath}")
+        except Exception as e:
+            print(f"An error occurred during import: {e}")
 
 if __name__ == "__main__":
     StrainConsole().cmdloop()
