@@ -128,11 +128,11 @@
   <div class="container">
     <h1 class="text-center mt-5 mb-5">Dispensaries</h1>
     <div class="row mb-3">
-      {% if user_role == "CLOUD_VENDOR" %}
+		{% if user_role in ["CLOUD_VENDOR", "CLOUD_CHASER"] %}
         <div class="col-md-12 text-center">
           <button class="btn btn-primary" id="openCreateStoreModal">Create Store</button>
         </div>
-      {% endif %}
+    	{% endif %}
     </div>
 
     <!-- Filters -->
