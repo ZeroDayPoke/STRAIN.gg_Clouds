@@ -233,7 +233,6 @@ def remove_favorite():
 
 @web_routes.route('/presentation', methods=['GET'], strict_slashes=False)
 @nocache
-@login_required
 def presentation():
     """Return the presentation page"""
     role = role_helper()
