@@ -17,6 +17,15 @@ web_routes = Blueprint('web_routes', __name__, url_prefix='/clouds',
 login_manager = LoginManager()
 
 
+# Helper function get or assign a user role
+def role_helper():
+    if current_user.is_authenticated:
+        role = current_user.role
+    else:
+        role = UserRole.CLOUD_GUEST
+    return role
+
+
 # Decorator to disable caching for a view
 def nocache(view):
     @wraps(view)
@@ -82,7 +91,9 @@ def stores():
 @nocache
 def index():
     """Return index page"""
-    return render_template('index.html')
+    role = role_helper()
+    return render_template('index.html', user_role=role.value,
+                           user_roles={key: value.value for key, value in UserRole.__members__.items()})
 
 
 @web_routes.route('/faq', methods=['GET'], strict_slashes=False)
@@ -218,3 +229,12 @@ def remove_favorite():
     else:
         flash("No strain ID provided.", "error")
     return redirect(url_for('web_routes.account', user_id=current_user.id))
+
+
+@web_routes.route('/presentation', methods=['GET'], strict_slashes=False)
+@nocache
+def presentation():
+    """Return the presentation page"""
+    role = role_helper()
+    return render_template('presentation.html', user_role=role.value,
+                           user_roles={key: value.value for key, value in UserRole.__members__.items()})
