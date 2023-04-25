@@ -16,23 +16,19 @@
 
 		<!-- Bootstrap CSS -->
 		<link href="{{ url_for('static', filename='lib/bootstrap.min.css') }}" rel="stylesheet">
-<div class="container-fluid p-0">
+<div class="container">
   <img src="{{ url_for('static', filename='images/header.png') }}"
        alt="Logo"
-       class="img-fluid"
+       width="auto"
+       height="200"
+       class="img-responsive img-rounded mx-auto d-block">
 </div>
 		<title>{% block title %}STRAIN.gg{% endblock %}</title>
 
 		<!-- Richard CSS -->
 		<link href="{{ url_for('static', filename='styles/richard.css') }}" rel="stylesheet">
 	</head>
-<<<<<<< HEAD
-	<body class="bg-light-blue">
-		<!-- your page content here -->
-	  </body>
-=======
 	<body class="bg-dark">
->>>>>>> b7631c56514aabec3aaa8a65b0be5c708112a991
 		<header>
 			<nav class="navbar navbar-expand-lg navbar-light bg-success">
 				<a class="navbar-brand" href="#">
