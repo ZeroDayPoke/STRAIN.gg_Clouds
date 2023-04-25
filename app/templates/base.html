@@ -26,7 +26,13 @@
 		<!-- Richard CSS -->
 		<link href="{{ url_for('static', filename='styles/richard.css') }}" rel="stylesheet">
 	</head>
+<<<<<<< HEAD
+	<body class="bg-light-blue">
+		<!-- your page content here -->
+	  </body>
+=======
 	<body class="bg-dark">
+>>>>>>> b7631c56514aabec3aaa8a65b0be5c708112a991
 		<header>
 			<nav class="navbar navbar-expand-lg navbar-light bg-success">
 				<a class="navbar-brand" href="#">
@@ -37,7 +43,7 @@
 				data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
 				aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
-				</button>	
+				</button>
 				<div class="collapse navbar-collapse" id="navbarSupportedContent">
 					<ul class="navbar-nav mr-auto">
 						<li class="nav-item">
@@ -51,6 +57,12 @@
 						</li>
 						<li class="nav-item">
 							<a class="nav-link" href="/clouds/strains">Strains</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="/clouds/stores">Stores</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="/clouds/faq">FAQ</a>
 						</li>
 					</ul>
 					<ul class="navbar-nav nav-account">
@@ -68,6 +80,11 @@
 							<li class="nav-item">
 								<a class="nav-link" href="/clouds/signout">Sign Out</a>
 							</li>
+							{% if user_role == "CLOUD_CHASER" %}
+								<li class="nav-item">
+									<a class="nav-link" href="{{ url_for('web_routes.presentation') }}">Presentation</a>
+								</li>
+							{% endif %}
 						{% endif %}
 					</ul>
 				</div>
@@ -78,12 +95,25 @@
 				<div class="alert alert-danger">{{ message }}</div>
 			{% endfor %}
 			{% block content %}{% endblock %}
+			<!-- Pass Role to JS-->
+			{% if user_role %}
+				<script>
+					const userRole = "{{ user_role }}";
+					const userRoles = JSON.parse('{{ user_roles | tojson | safe }}');
+					const userId = "{{ user_id }}";
+				</script>
+			{% endif %}
+			<script>
+				const signInUrl = "{{ url_for('web_routes.signin') }}";
+			</script>
+			{% block script %}{% endblock %}
 			<!-- jQuery first, then Popper.js, then Bootstrap JS -->
 			<script src="{{ url_for('static', filename='lib/jquery.min.js') }}"></script>
 			<script src="{{ url_for('static', filename='lib/popper.min.js') }}"></script>
 			<script src="{{ url_for('static', filename='lib/bootstrap.min.js') }}"></script>
-			<script src="{{ url_for('static', filename='scripts/richard.js') }}"></script>
-			{% block display %}STRAIN.gg{% endblock %}
+			<script src="{{ url_for('static', filename='lib/popper_two.js') }}"></script>
+			<script src="{{ url_for('static', filename='lib/bootstrap_two.js') }}"></script>
+			{% block display %}{% endblock %}
 		</main>
 		<footer class="bg-dark mt-3 py-2">
 			<div class="container">

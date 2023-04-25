@@ -17,6 +17,15 @@ web_routes = Blueprint('web_routes', __name__, url_prefix='/clouds',
 login_manager = LoginManager()
 
 
+# Helper function get or assign a user role
+def role_helper():
+    if current_user.is_authenticated:
+        role = current_user.role
+    else:
+        role = UserRole.CLOUD_GUEST
+    return role
+
+
 # Decorator to disable caching for a view
 def nocache(view):
     @wraps(view)
@@ -46,6 +55,7 @@ def load_user(user_id):
 
 # Define the routes for the web views
 
+
 @web_routes.route('/strains', methods=['GET'], strict_slashes=False)
 @nocache
 def strains():
@@ -54,16 +64,43 @@ def strains():
     if current_user.is_authenticated:
         role = current_user.role
     else:
-        role = 'anonymous'
-    # Process the strains data as needed, e.g. sorting or filtering
-    return render_template('strains.html', strains=all_strains, role=role, cloud_producer_role=UserRole.CLOUD_PRODUCER)
+        role = UserRole.CLOUD_GUEST
+    # Pass the strains data
+    return render_template('strains.html', strains=all_strains, user_role=role.value,
+                           user_roles={key: value.value for key, value in UserRole.__members__.items()})
+
+
+@web_routes.route('/stores', methods=['GET'], strict_slashes=False)
+@nocache
+def stores():
+    """Return stores page"""
+    all_dispensaries = storage.all('Store').values()
+    if current_user.is_authenticated:
+        role = current_user.role
+        user_id = current_user.id
+    else:
+        role = UserRole.CLOUD_GUEST
+        user_id = 'NA'
+    # Pass the stores data
+    return render_template('stores.html', stores=all_dispensaries, user_role=role.value,
+                           user_roles={key: value.value for key, value in UserRole.__members__.items()},
+                           user_id = user_id)
 
 
 @web_routes.route('/', methods=['GET'], strict_slashes=False)
 @nocache
 def index():
     """Return index page"""
-    return render_template('index.html')
+    role = role_helper()
+    return render_template('index.html', user_role=role.value,
+                           user_roles={key: value.value for key, value in UserRole.__members__.items()})
+
+
+@web_routes.route('/faq', methods=['GET'], strict_slashes=False)
+@nocache
+def faq():
+    """Return FAQ page"""
+    return render_template('faq.html')
 
 
 @web_routes.route('/about', methods=['GET'], strict_slashes=False)
@@ -89,7 +126,14 @@ def signup():
         username = request.form.get('username')
         email = request.form.get('email')
         password = request.form.get('password')
-        role = UserRole.CLOUD_PRODUCER if request.form.get('role') == str(UserRole.CLOUD_PRODUCER.value) else UserRole.CLOUD_CONSUMER
+        role_value = request.form.get('role')
+
+        if role_value == str(UserRole.CLOUD_PRODUCER.value):
+            role = UserRole.CLOUD_PRODUCER
+        elif role_value == str(UserRole.CLOUD_VENDOR.value):
+            role = UserRole.CLOUD_VENDOR
+        else:
+            role = UserRole.CLOUD_CONSUMER
 
         # Check if a user with the same username already exists
         all_users = storage.all(user.User).values()
@@ -166,3 +210,31 @@ def account(user_id):
     else:
         flash('You do not have permission to access this page.')
         return redirect(url_for('web_routes.index'))
+
+
+@web_routes.route('/remove_favorite', methods=['POST'])
+@nocache
+@login_required
+def remove_favorite():
+    """route to remove a favorite strain from the user's favorites"""
+    strain_id = request.form.get('strain_id')
+    if strain_id:
+        favorite_strain = storage.get("Strain", strain_id)
+        if favorite_strain:
+            current_user.remove_favorite_strain(favorite_strain)
+            storage.save()
+            flash(f"Removed {favorite_strain.name} from your favorites.", "success")
+        else:
+            flash("Invalid strain ID.", "error")
+    else:
+        flash("No strain ID provided.", "error")
+    return redirect(url_for('web_routes.account', user_id=current_user.id))
+
+
+@web_routes.route('/presentation', methods=['GET'], strict_slashes=False)
+@nocache
+def presentation():
+    """Return the presentation page"""
+    role = role_helper()
+    return render_template('presentation.html', user_role=role.value,
+                           user_roles={key: value.value for key, value in UserRole.__members__.items()})

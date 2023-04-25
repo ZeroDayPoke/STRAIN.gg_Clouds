@@ -13,8 +13,11 @@ from enum import Enum
 
 # Define the UserRole enumeration
 class UserRole(Enum):
+    CLOUD_GUEST = 'CLOUD_GUEST'
     CLOUD_CONSUMER = 'CLOUD_CONSUMER'
     CLOUD_PRODUCER = 'CLOUD_PRODUCER'
+    CLOUD_VENDOR = 'CLOUD_VENDOR'
+    CLOUD_CHASER = 'CLOUD_CHASER'
 
 # Create the association table for users and their favorite strains
 user_strain_association = Table(
@@ -32,6 +35,7 @@ class User(BaseModel):
     password = Column(String(128), nullable=False)
     role = Column(ChoiceType(UserRole, impl=String(20)), default=UserRole.CLOUD_CONSUMER, nullable=False)
     favorite_strains = relationship("Strain", secondary=user_strain_association, back_populates="users")
+    stores = relationship("Store", back_populates="owner")
 
     def __init__(self, *args, **kwargs):
         """creates new User"""
@@ -39,6 +43,9 @@ class User(BaseModel):
             pwd = kwargs.pop('password', None)
             if pwd:
                 User.__set_password(self, pwd)
+        else:
+            kwargs['role'] = UserRole.CLOUD_CONSUMER
+
         super().__init__(*args, **kwargs)
 
     def __repr__(self):
@@ -73,3 +80,8 @@ class User(BaseModel):
         """Adds a strain to the user's favorites"""
         if strain not in self.favorite_strains:
             self.favorite_strains.append(strain)
+
+    def remove_favorite_strain(self, strain):
+        """Removes a strain from the user's favorites"""
+        if strain in self.favorite_strains:
+            self.favorite_strains.remove(strain)

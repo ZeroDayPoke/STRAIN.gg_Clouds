@@ -20,11 +20,13 @@
                 <label for="password">Password</label>
                 <input type="password" class="form-control" id="password" name="password" required>
             </div>
-            <div class="form-check text-white">
-                <input class="form-check-input" type="checkbox" value="{{ UserRole.CLOUD_PRODUCER.value }}" id="cloud_producer" name="role">
-                <label class="form-check-label" for="cloud_producer">
-                    I am a cloud producer (creator of strain clouds)
-                </label>
+            <div class="form-group">
+                <label for="role">Role</label>
+                <select class="form-control" id="role" name="role">
+                    <option value="{{ UserRole.CLOUD_CONSUMER.value }}">CLOUD_CONSUMER</option>
+                    <option value="{{ UserRole.CLOUD_PRODUCER.value }}">CLOUD_PRODUCER</option>
+                    <option value="{{ UserRole.CLOUD_VENDOR.value }}">CLOUD_VENDOR</option>
+                </select>
             </div>
             <button type="submit" class="btn btn-primary">Signup</button>
         </form>
