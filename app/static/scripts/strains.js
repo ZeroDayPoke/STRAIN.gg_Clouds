@@ -51,6 +51,7 @@ function renderStrains(strainsToRender = strainsData) {
           </div>
           <div class="col-md-6">
             <h3>${strain.name}</h3>
+            <h4>${strain.id}</h4>
             <p>Type: ${strain.type}</p>
             <p>Terpene Profile: ${strain.terpene_profile}</p>
             <p>Effects: ${strain.effects}</p>
