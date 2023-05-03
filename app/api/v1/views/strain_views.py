@@ -1,104 +1,67 @@
+#!/usr/bin/python3
 """Strain routes"""
+from flask import Blueprint, jsonify, request, current_app
+from app.models.strain import Strain
+from utils import validate_model, handle_file_upload, format_json_response, ALLOWED_EXTENSIONS
 
+app_routes = Blueprint('app_routes', __name__, url_prefix='/api/v1/strains')
 
-@app_routes.route('/api/strains', methods=['GET'], strict_slashes=False)
+STRAIN_UPLOAD_FOLDER = 'app/static/images/strain_images/'
+
+@app_routes.route('/', methods=['GET'], strict_slashes=False)
 def get_strains():
     """api route to get all strains"""
-    strains = storage.all('Strain')
+    strains = current_app.storage.all('Strain')
     return jsonify([strain.to_dict() for strain in strains.values()])
 
-
-@app_routes.route('/api/strains', methods=['POST'], strict_slashes=False)
+@app_routes.route('/', methods=['POST'], strict_slashes=False)
 def create_strain():
     """api route to create a strain"""
-    image = request.files.get('image')
-
-    # Set a maximum file size of 1.5 MB
-    max_file_size = 1.5 * 1024 * 1024
-
-    if image:
-        if allowed_file(image.filename):
-            filename = secure_filename(image.filename)
-            image_path = os.path.join(UPLOAD_FOLDER, filename)
-            image.save(image_path)
-
-            # Check the file size after saving it to the server
-            file_size = os.path.getsize(image_path)
-
-            if file_size <= max_file_size:
-                new_strain = strain.Strain(name=request.form['name'],
-                                           type=request.form['type'],
-                                           delta_nine_concentration=request.form['delta_nine_concentration'],
-                                           cbd_concentration=request.form['cbd_concentration'],
-                                           terpene_profile=request.form['terpene_profile'],
-                                           effects=request.form['effects'],
-                                           uses=request.form['uses'],
-                                           flavor=request.form['flavor'],
-                                           image_filename=filename)
-            else:
-                # Remove the saved file if the size is too large
-                os.remove(image_path)
-                return jsonify({"success": False, "message": "File size is too large. Maximum allowed file size is 1.5 MB."}), 400
-        else:
-            return jsonify({"success": False, "message": "Invalid file type."}), 400
-    else:
-        new_strain = strain.Strain(name=request.form['name'], delta_nine_concentration=request.form['delta_nine_concentration'], target_symptom=request.form['target_symptom'])
-
-    new_strain.save(storage)
+    image_filename = handle_file_upload(request, STRAIN_UPLOAD_FOLDER, ALLOWED_EXTENSIONS, max_size=1.5 * 1024 * 1024)
+    new_strain = Strain(
+        name=request.form['name'],
+        type=request.form['type'],
+        delta_nine_concentration=request.form['delta_nine_concentration'],
+        cbd_concentration=request.form['cbd_concentration'],
+        terpene_profile=request.form['terpene_profile'],
+        effects=request.form['effects'],
+        uses=request.form['uses'],
+        flavor=request.form['flavor'],
+        image_filename=image_filename
+    )
+    new_strain.save(current_app.storage)
     return jsonify({"success": True, "strain": new_strain.to_dict()}), 201
 
-
-@app_routes.route('/api/strains/<strain_id>', methods=['PUT'], strict_slashes=False)
+@app_routes.route('/<strain_id>', methods=['PUT'], strict_slashes=False)
 def update_strain(strain_id):
     """api route to update a strain"""
     target_strain = validate_model('Strain', strain_id)
+    image_filename = handle_file_upload(request, STRAIN_UPLOAD_FOLDER, ALLOWED_EXTENSIONS)
 
-    image = request.files.get('image')
-    if image and allowed_file(image.filename):
-        filename = secure_filename(image.filename)
-        image.save(os.path.join(UPLOAD_FOLDER, filename))
-        target_strain.image_filename = filename
+    if image_filename:
+        target_strain.image_filename = image_filename
 
-    try:
-        target_strain.name = request.form['name']
-        target_strain.type = request.form['type']
-        target_strain.delta_nine_concentration = request.form['delta_nine_concentration']
-        target_strain.cbd_concentration = request.form['cbd_concentration']
-        target_strain.terpene_profile = request.form['terpene_profile']
-        target_strain.effects = request.form['effects']
-        target_strain.uses = request.form['uses']
-        target_strain.flavor = request.form['flavor']
-        target_strain.save(storage)
-        return jsonify({"success": True, "strain": target_strain.to_dict()}), 200
-    except Exception as e:
-        return jsonify({"success": False, "message": str(e)}), 400
+    target_strain.name = request.form['name']
+    target_strain.type = request.form['type']
+    target_strain.delta_nine_concentration = request.form['delta_nine_concentration']
+    target_strain.cbd_concentration = request.form['cbd_concentration']
+    target_strain.terpene_profile = request.form['terpene_profile']
+    target_strain.effects = request.form['effects']
+    target_strain.uses = request.form['uses']
+    target_strain.flavor = request.form['flavor']
+    target_strain.save(current_app.storage)
+    return jsonify({"success": True, "strain": target_strain.to_dict()}), 200
 
-
-@app_routes.route('/api/strains/<strain_id>', methods=['DELETE'], strict_slashes=False)
+@app_routes.route('/<strain_id>', methods=['DELETE'], strict_slashes=False)
 def delete_strain(strain_id):
     """api route to delete a strain"""
     target_strain = validate_model('Strain', strain_id)
-    storage.delete(target_strain)
-    storage.save()
+    current_app.storage.delete(target_strain)
+    current_app.storage.save()
     return jsonify({"success": True}), 200
 
-
-@app_routes.route('/api/strains/<strain_id>', methods=['GET'], strict_slashes=False)
+@app_routes.route('/<strain_id>', methods=['GET'], strict_slashes=False)
 def get_strain(strain_id):
     """api route to get a strain"""
     target_strain = validate_model('Strain', strain_id)
     return jsonify({"success": True, "strain": target_strain.to_dict()})
-
-
-@app_routes.route('/api/favorite_strains/<strain_id>', methods=['POST'], strict_slashes=False)
-def create_favorite_strain(strain_id):
-    """api route to add a strain to favorites"""
-    current_user = get_current_user()
-    target_strain = validate_model('Strain', strain_id)
-
-    try:
-        current_user.add_favorite_strain(target_strain)
-        current_user.save(storage)
-        return jsonify({"success": True, "strain": target_strain.to_dict()}), 201
-    except Exception as e:
-        return jsonify({"success": False, "message": str(e)}), 400
