@@ -3,13 +3,10 @@
 
 # Import necessary modules
 from .base import BaseModel, Base
-from sqlalchemy import Column, Integer, String, Table, ForeignKey, Enum
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Integer, String, Enum
+from app import db
 from sqlalchemy_utils import ChoiceType
 from werkzeug.security import generate_password_hash
-
-# Import Enum for Python 3.4 and later
-from enum import Enum
 
 # Define the UserRole enumeration
 class UserRole(Enum):
@@ -19,14 +16,6 @@ class UserRole(Enum):
     CLOUD_VENDOR = 'CLOUD_VENDOR'
     CLOUD_CHASER = 'CLOUD_CHASER'
 
-# Create the association table for users and their favorite strains
-user_strain_association = Table(
-    "user_strain_association",
-    Base.metadata,
-    Column("user_id", String(60), ForeignKey("users.id"), primary_key=True),
-    Column("strain_id", String(60), ForeignKey("strains.id"), primary_key=True),
-)
-
 # Create the User class
 class User(BaseModel):
     __tablename__ = "users"
@@ -34,8 +23,8 @@ class User(BaseModel):
     email = Column(String(128), unique=True, nullable=False)
     password = Column(String(128), nullable=False)
     role = Column(ChoiceType(UserRole, impl=String(20)), default=UserRole.CLOUD_CONSUMER, nullable=False)
-    favorite_strains = relationship("Strain", secondary=user_strain_association, back_populates="users")
-    stores = relationship("Store", back_populates="owner")
+    favorite_strains = db.relationship("Strain", secondary="user_strain_association", back_populates="users")
+    stores = db.relationship("Store", back_populates="owner")
 
     def __init__(self, *args, **kwargs):
         """creates new User"""

@@ -5,13 +5,12 @@ from os import environ
 from flask import make_response, jsonify
 from flasgger import Swagger
 from flasgger.utils import swag_from
-from sqlalchemy.orm.session import SessionTransactionState
 from config import config
 from app import create_app
 
 # Set the environment
 env = environ.get('FLASK_MODE', 'default')
-app = create_app(config[env])
+app = create_app(env)
 
 @app.errorhandler(404)
 def not_found(error):

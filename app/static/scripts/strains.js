@@ -3,7 +3,7 @@ let strainsData = [];
 // Function to fetch strains from the API
 async function fetchStrains() {
   try {
-    const response = await fetch('/clouds/api/strains');
+    const response = await fetch('/clouds/api/v1/strains');
     const data = await response.json();
     strainsData = data;
     renderStrains();
@@ -77,7 +77,7 @@ function renderStrains(strainsToRender = strainsData) {
 // Function to add the strain to the user's favorites
 async function addToFavorites(strainId) {
   try {
-    const response = await fetch(`/clouds/api/favorite_strains/${strainId}`, {
+    const response = await fetch(`/clouds/api/v1/strains/favorite_strains/${strainId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -127,7 +127,7 @@ async function submitCreateStrain(event) {
 
   try {
     // Send the POST request with the FormData object
-    const response = await fetch('/clouds/api/strains', {
+    const response = await fetch('/clouds/api/v1/strains', {
       method: 'POST',
       body: formData
     });
@@ -191,7 +191,7 @@ async function submitUpdateStrain(event) {
 
   try {
     // Send the PUT request with the FormData object
-    const response = await fetch(`/clouds/api/strains/${strainId}`, {
+    const response = await fetch(`/clouds/api/v1/strains/${strainId}`, {
       method: 'PUT',
       body: formData,
     });
@@ -228,7 +228,7 @@ function setupUpdateStrainForm() {
 // Function to handle the DELETE form submission
 async function deleteStrain(strainId) {
   try {
-    const response = await fetch(`/clouds/api/strains/${strainId}`, {
+    const response = await fetch(`/clouds/api/v1/strains/${strainId}`, {
       method: 'DELETE',
     });
 

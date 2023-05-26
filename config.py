@@ -1,7 +1,5 @@
-#!/usr/bin/python3
-"""Configuration file for the app"""
+# Configuration file for the app
 
-# Description: This file contains the configuration for the app
 import os
 from dotenv import load_dotenv
 
@@ -12,6 +10,7 @@ load_dotenv()
 class Config:
     JSONIFY_PRETTYPRINT_REGULAR = True
     SECRET_KEY = 'supersecretkey'
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # Set the development configuration
 class DevelopmentConfig(Config):
@@ -21,6 +20,7 @@ class DevelopmentConfig(Config):
     DB_PASS = os.getenv('DB_PASS', 'dev_pass')
     DB_HOST = os.getenv('DB_HOST', 'localhost')
     DB_NAME = os.getenv('DB_NAME', 'dev_db')
+    SQLALCHEMY_DATABASE_URI = f"mysql+mysqldb://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}"
 
 # Set the production configuration
 class ProductionConfig(Config):
@@ -30,6 +30,7 @@ class ProductionConfig(Config):
     DB_PASS = os.getenv('DB_PASS', 'prod_pass')
     DB_HOST = os.getenv('DB_HOST', 'localhost')
     DB_NAME = os.getenv('DB_NAME', 'prod_db')
+    SQLALCHEMY_DATABASE_URI = f"mysql+mysqldb://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}"
 
 # Set the configuration dictionary
 config = {
