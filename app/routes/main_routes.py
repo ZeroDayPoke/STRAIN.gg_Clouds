@@ -43,6 +43,7 @@ def stores():
     update_store_form = UpdateStoreForm()
     delete_store_form = DeleteStoreForm()
     add_store_form.related_strains.choices = [(strain.id, strain.name) for strain in strains]
+    update_store_form.related_strains.choices = [(strain.id, strain.name) for strain in strains]
 
     return render_template('stores.html', stores=stores,
                            add_store_form=add_store_form,
