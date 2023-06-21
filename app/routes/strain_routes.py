@@ -6,7 +6,7 @@ from flask_login import login_required, current_user
 from ..models import db, Strain
 from ..forms import AddStrainForm, UpdateStrainForm, DeleteStrainForm
 
-strain_routes = Blueprint('strain_routes', __name__, url_prefix='')
+strain_routes = Blueprint('strain_routes', __name__, url_prefix='/strains')
 
 
 @strain_routes.before_request
@@ -15,7 +15,7 @@ def requires_login():
     pass
 
 
-@strain_routes.route('/interface/update_strain', methods=['GET', 'POST'])
+@strain_routes.route('/update', methods=['POST'])
 def update_strain():
     if not (current_user.has_role('CLOUD_CHASER') or current_user.has_role('CLOUD_PRODUCER')):
         return redirect(url_for('main_routes.index'))
@@ -26,21 +26,20 @@ def update_strain():
         strain_to_update = Strain.query.get(form.strain.data)
         if strain_to_update:
             strain_to_update.name = form.name.data
-            strain_to_update.type = form.type.data
-            strain_to_update.delta_nine_concentration = form.delta_nine_concentration.data
+            strain_to_update.subtype = form.subtype.data
+            strain_to_update.thc_concentration = form.thc_concentration.data
             strain_to_update.cbd_concentration = form.cbd_concentration.data
-            strain_to_update.terpene_profile = form.terpene_profile.data
-            strain_to_update.effects = form.effects.data
-            strain_to_update.uses = form.uses.data
-            strain_to_update.flavor = form.flavor.data
             db.session.commit()
             flash('Strain has been updated!', 'success')
         else:
             flash('Error: Strain not found.', 'danger')
-        return redirect(url_for('admin_routes.interface'))
+        if current_user.has_role('CLOUD_CHASER'):
+            return redirect(url_for('admin_routes.interface'))
+        else:
+            return redirect(url_for('main_routes.strains'))
 
 
-@strain_routes.route('/interface/delete_strain', methods=['POST'])
+@strain_routes.route('/delete', methods=['POST'])
 def delete_strain():
     if not (current_user.has_role('CLOUD_CHASER') or current_user.has_role('CLOUD_PRODUCER')):
         return redirect(url_for('main_routes.index'))
@@ -58,7 +57,7 @@ def delete_strain():
         return redirect(url_for('admin_routes.interface'))
     return redirect(url_for('admin_routes.interface'))
 
-@strain_routes.route('/interface/add_strain', methods=['GET', 'POST'])
+@strain_routes.route('/add', methods=['POST'])
 def add_strain():
     if not (current_user.has_role('CLOUD_CHASER') or current_user.has_role('CLOUD_PRODUCER')):
         return redirect(url_for('main_routes.index'))
@@ -66,13 +65,9 @@ def add_strain():
     if form.validate_on_submit():
         new_strain = Strain(
             name=form.name.data,
-            type=form.type.data,
-            delta_nine_concentration=form.delta_nine_concentration.data,
+            subtype=form.subtype.data,
+            thc_concentration=form.thc_concentration.data,
             cbd_concentration=form.cbd_concentration.data,
-            terpene_profile=form.terpene_profile.data,
-            effects=form.effects.data,
-            uses=form.uses.data,
-            flavor=form.flavor.data
         )
         db.session.add(new_strain)
         db.session.commit()

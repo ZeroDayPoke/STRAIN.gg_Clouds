@@ -4,7 +4,7 @@ admin_routes.py - admin routes for the Flask application
 """
 # Path: app/routes/admin_routes.py
 
-from flask import Blueprint, render_template, redirect, url_for
+from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import login_required, current_user
 from ..models import db, User, Role, Store, Strain
 from ..forms import AddStoreForm, UpdateStoreForm, DeleteStoreForm, AddStrainForm, DeleteStrainForm
@@ -41,8 +41,6 @@ def interface():
     update_user_form = UpdateUserForm()
     delete_user_form = DeleteUserForm()
 
-    add_user_form.role.choices = [
-        (str(role.id), role.name) for role in Role.query.all()]
     add_store_form.related_strains.choices = [
         (str(strain.id), strain.name) for strain in Strain.query.all()]
     update_store_form.store.choices = [
@@ -80,4 +78,4 @@ def add_user():
         db.session.commit()
         flash('User added successfully.')
         return redirect(url_for('admin_routes.interface'))
-    return render_template('add_user.html', form=form)
+    return render_template('admin_routes.interface', form=form)

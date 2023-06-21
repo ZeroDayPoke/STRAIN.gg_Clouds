@@ -15,7 +15,7 @@ def run_app():
     host = environ.get('STRAINGG_HOST')
     port = environ.get('STRAINGG_PORT')
     if not host:
-        host = '0.0.0.0'
+        host = '127.0.0.1'
     if not port:
         port = '5000'
     app.run(host=host, port=port, threaded=True)

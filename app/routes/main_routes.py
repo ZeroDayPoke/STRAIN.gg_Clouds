@@ -35,24 +35,20 @@ def users():
     return render_template('users.html', users=users)
 
 
-@main_routes.route('/stores', methods=['GET', 'POST'])
+@main_routes.route('/stores', methods=['GET'])
 def stores():
+    strains = Strain.query.all()
     stores = Store.query.all()
     add_store_form = AddStoreForm()
     update_store_form = UpdateStoreForm()
     delete_store_form = DeleteStoreForm()
-    add_strain_form = AddStrainForm()
-    update_strain_form = UpdateStrainForm()
-    delete_strain_form = DeleteStrainForm()
+    add_store_form.related_strains.choices = [(strain.id, strain.name) for strain in strains]
 
     return render_template('stores.html', stores=stores,
                            add_store_form=add_store_form,
                            update_store_form=update_store_form,
                            delete_store_form=delete_store_form,
-                           add_strain_form=add_strain_form,
-                           update_strain_form=update_strain_form,
-                           delete_strain_form=delete_strain_form,
-                           current_user=current_user)
+                           current_user=current_user, strains=strains)
 
 
 @main_routes.route('/strains', methods=['GET', 'POST'])

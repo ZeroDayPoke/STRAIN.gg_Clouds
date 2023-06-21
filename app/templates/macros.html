@@ -11,3 +11,15 @@
   <p><input type="submit" value="{{ button_label }}" class="btn btn-primary"></p>
 </form>
 {% endmacro %}
+
+{% macro render_field(field, class_=None) %}
+<div class="mb-3">
+  {{ field.label(class_="form-label") }}
+  {{ field(class_=class_) }}
+  {% if field.errors %}
+  <div class="invalid-feedback">
+    {{ field.errors[0] }}
+  </div>
+  {% endif %}
+</div>
+{% endmacro %}
