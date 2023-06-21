@@ -1,76 +1,59 @@
 #!/usr/bin/env python3
 """User Model"""
 
-# Import necessary modules
-from .base import BaseModel, Base
-from sqlalchemy import Column, Integer, String, Enum
-from app import db
-from sqlalchemy_utils import ChoiceType
-from werkzeug.security import generate_password_hash
+from datetime import datetime, timedelta
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
+from .base import BaseModel, db
+from sqlalchemy.orm import relationship
+from .associations import user_roles, user_strains
 
-# Define the UserRole enumeration
-class UserRole(Enum):
-    CLOUD_GUEST = 'CLOUD_GUEST'
-    CLOUD_CONSUMER = 'CLOUD_CONSUMER'
-    CLOUD_PRODUCER = 'CLOUD_PRODUCER'
-    CLOUD_VENDOR = 'CLOUD_VENDOR'
-    CLOUD_CHASER = 'CLOUD_CHASER'
+class Role(BaseModel):
+    __tablename__ = 'roles'
 
-# Create the User class
-class User(BaseModel):
-    __tablename__ = "users"
-    username = Column(String(64), unique=True, nullable=False)
-    email = Column(String(128), unique=True, nullable=False)
-    password = Column(String(128), nullable=False)
-    role = Column(ChoiceType(UserRole, impl=String(20)), default=UserRole.CLOUD_CONSUMER, nullable=False)
-    favorite_strains = db.relationship("Strain", secondary="user_strain_association", back_populates="users")
-    stores = db.relationship("Store", back_populates="owner")
+    name = db.Column(db.String(64), unique=True)
+
+    def __repr__(self):
+        return '<Role {}>'.format(self.name)
+
+class User(UserMixin, BaseModel):
+    __tablename__ = 'users'
+
+    username = db.Column(db.String(64), unique=True, index=True)
+    email = db.Column(db.String(120), unique=True, index=True)
+    password_hash = db.Column(db.String(128))
+    roles = relationship('Role', secondary=user_roles, backref=db.backref('users', lazy='dynamic'))
+    verification_token = db.Column(db.String(40))
+    verified = db.Column(db.Boolean, default=False)
+    token_generated_at = db.Column(db.DateTime, default=datetime.utcnow)
+    favorite_strains = db.relationship("Strain", secondary=user_strains, back_populates="related_users")
+    stores = db.relationship('Store', back_populates='owner')
 
     def __init__(self, *args, **kwargs):
         """creates new User"""
-        if kwargs:
-            pwd = kwargs.pop('password', None)
-            if pwd:
-                User.__set_password(self, pwd)
-        else:
-            kwargs['role'] = UserRole.CLOUD_CONSUMER
-
+        password = kwargs.pop('password', None)
         super().__init__(*args, **kwargs)
+        if password:
+            self.set_password(password)
 
     def __repr__(self):
         """User representation"""
         return f'<User {self.username}>'
 
-    def __set_password(self, pwd):
+    def set_password(self, pwd):
         """encrypts password"""
-        secure_password = generate_password_hash(pwd)
-        setattr(self, "password", secure_password)
+        self.password_hash = generate_password_hash(pwd)
 
     @property
-    def is_authenticated(self):
-        """Checks if user is authenticated"""
-        return True
+    def password(self):
+        raise AttributeError('password: write-only field')
 
-    @property
-    def is_active(self):
-        """Checks if user is active"""
-        return True
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
-    @property
-    def is_anonymous(self):
-        """Checks if user is anonymous"""
-        return False
+    def has_role(self, role_name):
+        return any(role.name == role_name for role in self.roles)
 
-    def get_id(self):
-        """Gets the user id"""
-        return str(self.id)
-
-    def add_favorite_strain(self, strain):
-        """Adds a strain to the user's favorites"""
-        if strain not in self.favorite_strains:
-            self.favorite_strains.append(strain)
-
-    def remove_favorite_strain(self, strain):
-        """Removes a strain from the user's favorites"""
-        if strain in self.favorite_strains:
-            self.favorite_strains.remove(strain)
+    def token_expired(self):
+        expiration_time = self.token_generated_at + timedelta(hours=24)
+        return datetime.utcnow() > expiration_time

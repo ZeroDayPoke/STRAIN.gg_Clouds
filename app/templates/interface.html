@@ -1,0 +1,91 @@
+{% extends "base.html" %} {% block title %} Admin Interface {% endblock %} {%
+block content %}
+<div class="container">
+  <h1 class="mt-5">Admin Interface</h1>
+
+  <h2 class="mt-5">User Management</h2>
+  <div class="row">
+    <div class="col-lg-4">
+      <h3 class="text-white">Current Users</h3>
+      <ul>
+        {% for user in users %}
+        <li>{{ user.username }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="col-lg-8">
+      <form action="{{ url_for('admin_routes.add_user') }}" method="post">
+        {{ add_user_form.csrf_token }} {{ add_user_form.username.label }} {{
+        add_user_form.username }} {{ add_user_form.email.label }} {{
+        add_user_form.email }} {{ add_user_form.password.label }} {{
+        add_user_form.password }} {{ add_user_form.role.label }} {{
+        add_user_form.role }}
+        <button type="submit" class="btn btn-primary">Add User</button>
+      </form>
+
+      <form action="{{ url_for('user_routes.update_user') }}" method="post">
+        {{ update_user_form.csrf_token }} {{ update_user_form.user.label }} {{
+        update_user_form.user }} {{ update_user_form.username.label }} {{
+        update_user_form.username }} {{ update_user_form.email.label }} {{
+        update_user_form.email }} {{ update_user_form.password.label }} {{
+        update_user_form.password }} {{ update_user_form.roles.label }} {{
+        update_user_form.roles }}
+        <button type="submit" class="btn btn-primary">Update User</button>
+      </form>
+
+      <form action="{{ url_for('user_routes.delete_user') }}" method="post">
+        {{ delete_user_form.csrf_token }} {{ delete_user_form.user.label }} {{
+        delete_user_form.user }}
+        <button type="submit" class="btn btn-primary">Delete User</button>
+      </form>
+    </div>
+  </div>
+
+  <h2 class="mt-5">Store Management</h2>
+  <div class="row">
+    <div class="col-lg-4">
+      <h3 class="text-white">Current Stores</h3>
+      <ul>
+        {% for store in stores %}
+        <li>{{ store.name }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="col-lg-8">
+      <form action="{{ url_for('store_routes.add_store') }}" method="post">
+        {{ add_store_form.csrf_token }} {{ add_store_form.name.label }} {{
+        add_store_form.name }} {{ add_store_form.related_strains.label }} {{
+        add_store_form.related_strains }}
+        <button type="submit" class="btn btn-primary">Add Store</button>
+      </form>
+
+      <form action="{{ url_for('store_routes.update_store') }}" method="post">
+        {{ update_store_form.csrf_token }} {{ update_store_form.store.label }}
+        {{ update_store_form.store }} {{ update_store_form.name.label }} {{
+        update_store_form.name }} {{ update_store_form.related_strains.label }}
+        {{ update_store_form.related_strains }}
+        <button type="submit" class="btn btn-primary">Update Store</button>
+      </form>
+
+      <form action="{{ url_for('store_routes.delete_store') }}" method="post">
+        {{ delete_store_form.csrf_token }} {{ delete_store_form.store.label }}
+        {{ delete_store_form.store }}
+        <button type="submit" class="btn btn-primary">Delete Store</button>
+      </form>
+
+      <h2 class="mt-5">Strain Management</h2>
+      <form action="{{ url_for('strain_routes.add_strain') }}" method="post">
+        {{ add_strain_form.csrf_token }} {{ add_strain_form.name.label }} {{
+        add_strain_form.name }}
+        <button type="submit" class="btn btn-primary">Add Strain</button>
+      </form>
+
+      <form action="{{ url_for('strain_routes.delete_strain') }}" method="post">
+        {{ delete_strain_form.csrf_token }} {{ delete_strain_form.strain.label
+        }} {{ delete_strain_form.strain }}
+        <button type="submit" class="btn btn-primary">Delete Strain</button>
+      </form>
+    </div>
+    {% endblock %}
+  </div>
+</div>

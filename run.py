@@ -1,26 +1,14 @@
 #!/usr/bin/python3
 """ Flask Application """
-
 from os import environ
-from flask import make_response, jsonify
-from flasgger import Swagger
-from flasgger.utils import swag_from
-from config import config
-from app import create_app
+from app import create_app, db
+from flask_migrate import Migrate
 
-# Set the environment
-env = environ.get('FLASK_MODE', 'default')
-app = create_app(env)
+# Create an instance of the Flask application
+app = create_app()
 
-@app.errorhandler(404)
-def not_found(error):
-    """ 404 Error
-    ---
-    responses:
-      404:
-        description: a resource was not found
-    """
-    return make_response(jsonify({'error': "Not found"}), 404)
+# Create a Migrate instance
+migrate = Migrate(app, db)
 
 def run_app():
     """ Main Function """

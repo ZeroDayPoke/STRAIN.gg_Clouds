@@ -7,26 +7,35 @@
 {% block content %}
     <div class="container">
         <h1 class="mt-5 text-white">Signup</h1>
-        <form action="{{ url_for('web_routes.signup') }}" method="post">
+        <form action="{{ url_for('auth_routes.signup') }}" method="post">
+            {{ form.hidden_tag() }}
             <div class="form-group text-white">
                 <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" name="username" required>
+                {{ form.username(class="form-control") }}
+                {% if form.username.errors %}
+                    <p class="error">{{ form.username.errors[0] }}</p>
+                {% endif %}
             </div>
             <div class="form-group text-white">
                 <label for="email">Email</label>
-                <input type="email" class="form-control" id="email" name="email" required>
+                {{ form.email(class="form-control") }}
+                {% if form.email.errors %}
+                    <p class="error">{{ form.email.errors[0] }}</p>
+                {% endif %}
             </div>
             <div class="form-group text-white">
                 <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" name="password" required>
+                {{ form.password(class="form-control") }}
+                {% if form.password.errors %}
+                    <p class="error">{{ form.password.errors[0] }}</p>
+                {% endif %}
             </div>
             <div class="form-group text-white">
                 <label for="role">Role</label>
-                <select class="form-control" id="role" name="role">
-                    <option value="{{ UserRole.CLOUD_CONSUMER.value }}">CLOUD_CONSUMER</option>
-                    <option value="{{ UserRole.CLOUD_PRODUCER.value }}">CLOUD_PRODUCER</option>
-                    <option value="{{ UserRole.CLOUD_VENDOR.value }}">CLOUD_VENDOR</option>
-                </select>
+                {{ form.role(class="form-control") }}
+                {% if form.role.errors %}
+                    <p class="error">{{ form.role.errors[0] }}</p>
+                {% endif %}
             </div>
             <button type="submit" class="btn btn-primary">Signup</button>
         </form>

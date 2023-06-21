@@ -1,19 +1,59 @@
-{% extends 'base.html' %}
-
-{% block content %}
-    <h1>Account</h1>
-    <p>Email: {{ email }}</p>
-    <p>User Type: {{ role }}</p>
-    <h2>Favorite Strains</h2>
-    <ul>
-        {% for strain in favorite_strains %}
-        <li>
-          {{ strain.name }}
-          <form action="{{ url_for('web_routes.remove_favorite') }}" method="post" class="d-inline">
-            <input type="hidden" name="strain_id" value="{{ strain.id }}">
-            <button type="submit" class="btn btn-link text-danger p-0">Remove</button>
-          </form>
-        </li>
-      {% endfor %}
-    </ul>
+{% extends "base.html" %} {% block title %} Account - ZDP {% endblock %} {%
+block content %}
+<section class="row">
+  <article class="col-md-6">
+    <div class="mt-4" id="account_info">
+      <h2>Account Information</h2>
+      <p><strong>Username:</strong> {{ current_user.username }}</p>
+      <p><strong>Email:</strong> {{ current_user.email }}</p>
+      {% if not current_user.verified %}
+      <p>
+        Your email is not verified.
+        <a
+          href="{{ url_for('auth_routes.send_verification_email') }}"
+          class="btn btn-primary"
+          >Send Verification Email</a
+        >
+      </p>
+      {% endif %}
+    </div>
+    <div class="mt-4" id="change_password">
+      <h2>Change Password</h2>
+      <form action="{{ url_for('auth_routes.signout') }}" method="post">
+        <div class="mb-3">
+          <label for="current_password" class="form-label"
+            >Current Password</label
+          >
+          <input
+            type="password"
+            class="form-control"
+            id="current_password"
+            name="current_password"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="new_password" class="form-label">New Password</label>
+          <input
+            type="password"
+            class="form-control"
+            id="new_password"
+            name="new_password"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="confirm_password" class="form-label"
+            >Confirm New Password</label
+          >
+          <input
+            type="password"
+            class="form-control"
+            id="confirm_password"
+            name="confirm_password"
+          />
+        </div>
+        <button type="submit" class="btn btn-primary">Change Password</button>
+      </form>
+    </div>
+  </article>
+</section>
 {% endblock %}
