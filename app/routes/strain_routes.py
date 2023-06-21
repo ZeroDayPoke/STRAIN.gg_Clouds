@@ -8,13 +8,20 @@ from ..forms import AddStrainForm, UpdateStrainForm, DeleteStrainForm
 
 strain_routes = Blueprint('strain_routes', __name__, url_prefix='')
 
-@strain_routes.route('/interface/update_strain', methods=['GET', 'POST'])
+
+@strain_routes.before_request
 @login_required
+def requires_login():
+    pass
+
+
+@strain_routes.route('/interface/update_strain', methods=['GET', 'POST'])
 def update_strain():
-    if not current_user.has_role('ADMIN'):
-        return redirect(url_for('main_routes.strains'))
+    if not (current_user.has_role('CLOUD_CHASER') or current_user.has_role('CLOUD_PRODUCER')):
+        return redirect(url_for('main_routes.index'))
     form = UpdateStrainForm()
-    form.strain.choices = [(str(strain.id), strain.name) for strain in Strain.query.all()]
+    form.strain.choices = [(str(strain.id), strain.name)
+                           for strain in Strain.query.all()]
     if form.validate_on_submit():
         strain_to_update = Strain.query.get(form.strain.data)
         if strain_to_update:
@@ -32,13 +39,14 @@ def update_strain():
             flash('Error: Strain not found.', 'danger')
         return redirect(url_for('admin_routes.interface'))
 
+
 @strain_routes.route('/interface/delete_strain', methods=['POST'])
-@login_required
 def delete_strain():
-    if not current_user.has_role('ADMIN'):
-        return redirect(url_for('main_routes.strains'))
+    if not (current_user.has_role('CLOUD_CHASER') or current_user.has_role('CLOUD_PRODUCER')):
+        return redirect(url_for('main_routes.index'))
     form = DeleteStrainForm()
-    form.strain.choices = [(str(strain.id), strain.name) for strain in Strain.query.all()]
+    form.strain.choices = [(str(strain.id), strain.name)
+                           for strain in Strain.query.all()]
     if form.validate_on_submit():
         strain_to_delete = Strain.query.get(form.strain.data)
         if strain_to_delete:
@@ -48,12 +56,12 @@ def delete_strain():
         else:
             flash('Error: Strain not found.', 'danger')
         return redirect(url_for('admin_routes.interface'))
+    return redirect(url_for('admin_routes.interface'))
 
 @strain_routes.route('/interface/add_strain', methods=['GET', 'POST'])
-@login_required
 def add_strain():
-    if not current_user.has_role('ADMIN'):
-        return redirect(url_for('main_routes.strains'))
+    if not (current_user.has_role('CLOUD_CHASER') or current_user.has_role('CLOUD_PRODUCER')):
+        return redirect(url_for('main_routes.index'))
     form = AddStrainForm()
     if form.validate_on_submit():
         new_strain = Strain(

@@ -15,7 +15,7 @@ def requires_login():
 
 @store_routes.route('/interface/update_store', methods=['GET', 'POST'])
 def update_store():
-    if not current_user.has_role('ADMIN'):
+    if not current_user.has_role('CLOUD_CHASER'):
         return redirect(url_for('main_routes.stores'))
     form = UpdateStoreForm()
     form.store.choices = [(str(store.id), store.name) for store in Store.query.all()]
@@ -33,7 +33,7 @@ def update_store():
 
 @store_routes.route('/interface/delete_store', methods=['POST'])
 def delete_store():
-    if not current_user.has_role('ADMIN'):
+    if not current_user.has_role('CLOUD_CHASER'):
         return redirect(url_for('main_routes.stores'))
     form = DeleteStoreForm()
     form.store.choices = [(str(store.id), store.name) for store in Store.query.all()]
@@ -49,7 +49,7 @@ def delete_store():
 
 @store_routes.route('/interface/add_store', methods=['GET', 'POST'])
 def add_store():
-    if not current_user.has_role('ADMIN'):
+    if not current_user.has_role('CLOUD_CHASER'):
         return redirect(url_for('main_routes.stores'))
     form = AddStoreForm()
     if form.validate_on_submit():

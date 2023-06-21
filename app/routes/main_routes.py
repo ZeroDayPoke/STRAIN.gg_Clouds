@@ -4,43 +4,71 @@
 from flask import render_template, request, Blueprint
 from flask_login import login_required, current_user
 from ..models import User, Store, Strain
-from ..forms import StrainFilterForm
+from ..forms import StrainFilterForm, AddStoreForm, AddStrainForm, UpdateStoreForm, UpdateStrainForm, DeleteStoreForm, DeleteStrainForm
 
 main_routes = Blueprint('main_routes', __name__, url_prefix='')
+
 
 @main_routes.route('/')
 def index():
     return render_template('index.html', include_header=True, current_user=current_user)
 
+
 @main_routes.route('/about')
 def about():
     return render_template('about.html', include_header=True, current_user=current_user)
+
 
 @main_routes.route('/contact')
 def contact():
     return render_template('contact.html', include_header=True, current_user=current_user)
 
+
 @main_routes.route('/faq')
 def faq():
     return render_template('faq.html', include_header=True, current_user=current_user)
+
 
 @main_routes.route('/users', methods=['GET', 'POST'])
 def users():
     users = User.query.all()
     return render_template('users.html', users=users)
 
+
 @main_routes.route('/stores', methods=['GET', 'POST'])
 def stores():
     stores = Store.query.all()
-    return render_template('stores.html', stores=stores)
+    add_store_form = AddStoreForm()
+    update_store_form = UpdateStoreForm()
+    delete_store_form = DeleteStoreForm()
+    add_strain_form = AddStrainForm()
+    update_strain_form = UpdateStrainForm()
+    delete_strain_form = DeleteStrainForm()
+
+    return render_template('stores.html', stores=stores,
+                           add_store_form=add_store_form,
+                           update_store_form=update_store_form,
+                           delete_store_form=delete_store_form,
+                           add_strain_form=add_strain_form,
+                           update_strain_form=update_strain_form,
+                           delete_strain_form=delete_strain_form,
+                           current_user=current_user)
+
 
 @main_routes.route('/strains', methods=['GET', 'POST'])
 def strains():
-    form = StrainFilterForm(request.form)
-    form.strains.choices = [(str(strain.id), strain.name) for strain in Strain.query.all()]
-    if request.method == 'POST' and form.validate():
-        selected_strains = form.strains.data
-        strains = Strain.query.filter(Strain.id.in_(selected_strains)).all()
-    else:
-        strains = Strain.query.all()
-    return render_template('strains.html', strains=strains, form=form)
+    strains = Strain.query.all()
+    add_store_form = AddStoreForm()
+    update_store_form = UpdateStoreForm()
+    delete_store_form = DeleteStoreForm()
+    add_strain_form = AddStrainForm()
+    update_strain_form = UpdateStrainForm()
+    delete_strain_form = DeleteStrainForm()
+    return render_template('strains.html', strains=strains,
+                           add_store_form=add_store_form,
+                           update_store_form=update_store_form,
+                           delete_store_form=delete_store_form,
+                           add_strain_form=add_strain_form,
+                           update_strain_form=update_strain_form,
+                           delete_strain_form=delete_strain_form,
+                           current_user=current_user)

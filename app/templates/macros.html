@@ -1,0 +1,13 @@
+<!-- app/templates/macros.html -->
+{% macro render_form(form, route, button_label) %}
+<form action="{{ url_for(route) }}" method="POST">
+  {{ form.hidden_tag() }}
+  {% for field in form if field.type != "SubmitField" %}
+  <p>{{ field.label }} {{ field() }}</p>
+  {% if field.errors %}
+  <p class="error">{{ field.errors[0] }}</p>
+  {% endif %}
+  {% endfor %}
+  <p><input type="submit" value="{{ button_label }}" class="btn btn-primary"></p>
+</form>
+{% endmacro %}
