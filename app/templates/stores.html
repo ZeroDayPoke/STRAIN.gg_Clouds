@@ -28,6 +28,7 @@
           method="post"
           id="updateStoreForm"
         >
+          <input type="hidden" name="id" value="" />
           {{ update_store_form.csrf_token }}
           <div class="modal-body">
             {{ macros.render_field(update_store_form.name,

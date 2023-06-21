@@ -9,8 +9,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
       const operatingHours = event.target.getAttribute("data-operating-hours");
 
       const form = document.querySelector("#updateStoreForm");
-      form.action = `/stores/update_store/${id}`;
-
+      form.action = `/stores/update_store`;
+      form.querySelector('input[name="id"]').value = id;
       form.querySelector('input[name="name"]').value = name;
       form.querySelector('input[name="location"]').value = location;
       form.querySelector('input[name="operating_hours"]').value =
