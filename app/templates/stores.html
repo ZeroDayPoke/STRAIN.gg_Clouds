@@ -1,76 +1,8 @@
-{% extends "base.html" %} {% block script %}
-<script src="{{ url_for('static', filename='scripts/stores.js') }}"></script>
-{% endblock %}{% block content %} {% import 'macros.html' as macros %}
+{% extends "base.html" %} {% block script %} {% endblock %}{% block content %}
+{% import 'macros.html' as macros %}
 
 <div class="container">
   <h1 class="mt-5">Stores</h1>
-  <!-- Update Store Modal -->
-  <div
-    class="modal fade"
-    id="updateStoreModal"
-    tabindex="-1"
-    aria-labelledby="updateStoreModalLabel"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="updateStoreModalLabel">Update Store</h5>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
-        </div>
-        <form
-          action="{{ url_for('store_routes.update_store') }}"
-          method="post"
-          id="updateStoreForm"
-        >
-          <input type="hidden" name="id" value="" />
-          {{ update_store_form.csrf_token }}
-          <div class="modal-body">
-            {{ macros.render_field(update_store_form.name,
-            class_="form-control") }} {{
-            macros.render_field(update_store_form.location,
-            class_="form-control") }} {{
-            macros.render_field(update_store_form.operating_hours,
-            class_="form-control") }}
-            <div class="mb-3">
-              <label for="related_strains" class="form-label"
-                >Related Strains</label
-              >
-              {% for id, name in update_store_form.related_strains.choices %}
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  value="{{ id }}"
-                  id="related_strains{{ id }}"
-                  name="related_strains"
-                />
-                <label class="form-check-label" for="related_strains{{ id }}"
-                  >{{ name }}</label
-                >
-              </div>
-              {% endfor %}
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Cancel
-            </button>
-            <button type="submit" class="btn btn-primary">Update Store</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
 
   {% if current_user.has_role('CLOUD_CHASER') or
   current_user.has_role('CLOUD_VENDOR') %}
@@ -103,7 +35,11 @@
             aria-label="Close"
           ></button>
         </div>
-        <form action="{{ url_for('store_routes.add_store') }}" method="post", enctype="multipart/form-data">
+        <form
+          action="{{ url_for('store_routes.add_store') }}"
+          method="post"
+          enctype="multipart/form-data"
+        >
           {{ add_store_form.csrf_token }}
           <div class="modal-body">
             {{ macros.render_field(add_store_form.name, class_="form-control")
@@ -133,12 +69,7 @@
           </div>
           <div class="mb-3">
             <label for="image" class="form-label">Store Image</label>
-            <input
-              type="file"
-              class="form-control"
-              id="image"
-              name="image"
-            />
+            <input type="file" class="form-control" id="image" name="image" />
           </div>
           <div class="modal-footer">
             <button
@@ -155,11 +86,142 @@
     </div>
   </div>
   {% endif %}
-
   <div class="row">
     {% for store in stores %}
     <div class="col-lg-4 mb-4">
       <div class="card">
+        <!-- Update Store Modal -->
+        <div
+          class="modal fade"
+          id="updateStoreModal{{ store.id }}"
+          tabindex="-1"
+          aria-labelledby="updateStoreModalLabel{{ store.id }}"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5
+                  class="modal-title"
+                  id="updateStoreModalLabel{{ store.id }}"
+                >
+                  Update Store
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <form
+                action="{{ url_for('store_routes.update_store', id=store.id) }}"
+                method="post"
+                enctype="multipart/form-data"
+              >
+                {{ update_store_form.csrf_token }}
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <label for="name" class="form-label">Store Name</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="name"
+                      name="name"
+                      value="{{ store.name }}"
+                      required
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label for="location" class="form-label">Location</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="location"
+                      name="location"
+                      value="{{ store.location }}"
+                      required
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label for="operating_hours" class="form-label"
+                      >Operating Hours</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="operating_hours"
+                      name="operating_hours"
+                      value="{{ store.operating_hours }}"
+                      required
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label for="related_strains" class="form-label"
+                      >Related Strains</label
+                    >
+                    {% for id, name in update_store_form.related_strains.choices
+                    %}
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        value="{{ id }}"
+                        id="related_strains{{ id }}"
+                        name="related_strains"
+                        {%
+                        if
+                        id
+                        in
+                        store.related_strains
+                        %}checked{%
+                        endif
+                        %}
+                      />
+                      <label
+                        class="form-check-label"
+                        for="related_strains{{ id }}"
+                        >{{ name }}</label
+                      >
+                    </div>
+                    {% endfor %}
+                  </div>
+                  <div class="mb-3">
+                    <label for="image" class="form-label">Store Image</label>
+                    <input
+                      type="file"
+                      class="form-control"
+                      id="image"
+                      name="image"
+                    />
+                    <small class="form-text text-muted"
+                      >Current image: {{ store.image_filename }}</small
+                    >
+                  </div>
+                </div>
+
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                  >
+                    Cancel
+                  </button>
+                  <button type="submit" class="btn btn-primary">
+                    Update Store
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <img
+          src="{{ url_for('static', filename='images/store_images/' + store.image_filename) }}"
+          class="card-img-top"
+          alt="Store Image"
+        />
         <div class="card-body">
           <h5 class="card-title">{{ store.name }}</h5>
           <p>{{ store.related_strains }}</p>
@@ -196,14 +258,9 @@
             Delete
           </button>
           <button
-            class="btn btn-primary update-btn"
+            class="btn btn-primary"
             data-bs-toggle="modal"
-            data-bs-target="#updateStoreModal"
-            data-id="{{ store.id }}"
-            data-name="{{ store.name }}"
-            data-location="{{ store.location }}"
-            data-operating-hours="{{ store.operating_hours }}"
-            data-related-strains="{{ store.related_strains|join(',') }}"
+            data-bs-target="#updateStoreModal{{ store.id }}"
           >
             Update
           </button>

@@ -19,17 +19,24 @@ def requires_login():
     pass
 
 
-@store_routes.route('/update_store', methods=['POST'])
-def update_store():
+@store_routes.route('/update_store/<id>', methods=['POST'])
+def update_store(id):
+    if not current_user.has_role('CLOUD_CHASER'):
+        return redirect(url_for('main_routes.index'))
+
     strains = Strain.query.all()
     form = UpdateStoreForm()
     form.related_strains.choices = [
         (strain.id, strain.name) for strain in strains]
     if form.validate_on_submit():
-        store = Store.query.get(form.id.data)
+        store = Store.query.get(id)
+        image_filename = handle_file_upload(request, UPLOAD_FOLDER, ALLOWED_EXTENSIONS, MAX_FILE_SIZE)
+        if image_filename is not None:
+            store.image_filename = image_filename
         store.name = form.name.data
         store.location = form.location.data
         store.operating_hours = form.operating_hours.data
+        store.owner_id = current_user.id
         store.related_strains = Strain.query.filter(
             Strain.id.in_(form.related_strains.data)).all()
         db.session.commit()
