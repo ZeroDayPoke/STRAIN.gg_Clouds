@@ -36,9 +36,26 @@
             macros.render_field(update_store_form.location,
             class_="form-control") }} {{
             macros.render_field(update_store_form.operating_hours,
-            class_="form-control") }} {{
-            macros.render_field(update_store_form.related_strains,
             class_="form-control") }}
+            <div class="mb-3">
+              <label for="related_strains" class="form-label"
+                >Related Strains</label
+              >
+              {% for id, name in update_store_form.related_strains.choices %}
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value="{{ id }}"
+                  id="related_strains{{ id }}"
+                  name="related_strains"
+                />
+                <label class="form-check-label" for="related_strains{{ id }}"
+                  >{{ name }}</label
+                >
+              </div>
+              {% endfor %}
+            </div>
           </div>
           <div class="modal-footer">
             <button
@@ -136,6 +153,7 @@
       <div class="card">
         <div class="card-body">
           <h5 class="card-title">{{ store.name }}</h5>
+          <p> {{ store.related_strains }}</p>
           <p class="card-text">Location: {{ store.location }}</p>
           <p class="card-text">Operating Hours: {{ store.operating_hours }}</p>
           <p class="card-text">Owner ID: {{ store.owner_id }}</p>

@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         'select[name="related_strains"]'
       );
       for (let option of strainsSelect.options) {
-        if (relatedStrains.includes(option.value.toString())) {
+        if (relatedStrains.includes(option.value)) {
           option.selected = true;
         } else {
           option.selected = false;

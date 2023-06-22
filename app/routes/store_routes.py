@@ -18,25 +18,20 @@ def requires_login():
 @store_routes.route('/update_store', methods=['POST'])
 def update_store():
     form = UpdateStoreForm()
-    form.related_strains.choices = [(s.id, s.name) for s in Strain.query.all()]
+    strains = Strain.query.all()
+    form = UpdateStoreForm()
+    form.related_strains.choices = [
+        (strain.id, strain.name) for strain in strains]
     if form.validate_on_submit():
-        id = form.id.data
-        store = Store.query.get(id)
-        if store:
-            store.name = form.name.data
-            store.location = form.location.data
-            store.operating_hours = form.operating_hours.data
-            store.related_strains = form.related_strains.data
-            db.session.commit()
-            flash('Store updated successfully', 'success')
-            return redirect(url_for('main.stores'))
-        else:
-            flash('Store not found', 'danger')
-            return redirect(url_for('main.stores'))
-    else:
-        print('Error: {}'.format(form.errors))
-        flash('Form validation error', 'error')
-        return redirect(url_for('main.stores'))
+        store = Store.query.get(form.id.data)
+        store.name = form.name.data
+        store.location = form.location.data
+        store.operating_hours = form.operating_hours.data
+        store.related_strains = Strain.query.filter(Strain.id.in_(form.related_strains.data)).all()
+        db.session.commit()
+        flash('Store updated successfully!', 'success')
+    return redirect(url_for('main_routes.stores'))
+
 
 
 @store_routes.route('/delete_store', methods=['POST'])
