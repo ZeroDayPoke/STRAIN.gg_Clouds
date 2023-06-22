@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Store Routes for the Flask application"""
 # app/routes/store_routes.py
-from flask import Blueprint, redirect, url_for, flash
+from flask import Blueprint, redirect, url_for, flash, request
 from flask_login import login_required, current_user
 from ..models import db, Store, Strain
 from ..forms import AddStoreForm, UpdateStoreForm, DeleteStoreForm
@@ -17,36 +17,24 @@ def requires_login():
 
 @store_routes.route('/update_store', methods=['POST'])
 def update_store():
-    if not current_user.has_role('CLOUD_CHASER'):
-        return redirect(url_for('main_routes.index'))
-
-    strains = Strain.query.all()
-    form = UpdateStoreForm()
-    form.store.choices = [(str(store.id), store.name)
-                          for store in Store.query.all()]
-    form.related_strains.choices = [
-        (strain.id, strain.name) for strain in strains]
-
-    if form.validate_on_submit():
-        store_to_update = Store.query.get(form.store.data)
-        if store_to_update:
-            store_to_update.name = form.name.data
-            store_to_update.location = form.location.data
-            store_to_update.operating_hours = form.operating_hours.data
-
-            strain_ids = form.related_strains.data
-            strains = Strain.query.filter(Strain.id.in_(strain_ids)).all()
-            store_to_update.related_strains = strains
-
+    form = UpdateStoreForm(request.form)
+    if form.validate():
+        id = form.id.data
+        store = Store.query.get(id)
+        if store:
+            store.name = form.name.data
+            store.location = form.location.data
+            store.operating_hours = form.operating_hours.data
+            store.related_strains = form.related_strains.data
             db.session.commit()
-            flash('Store has been updated!', 'success')
+            flash('Store updated successfully', 'success')
+            return redirect(url_for('main.stores'))
         else:
-            flash('Error: Store not found.', 'danger')
-
-    if current_user.has_role('CLOUD_CHASER'):
-        return redirect(url_for('admin_routes.interface'))
+            flash('Store not found', 'error')
+            return redirect(url_for('main.stores'))
     else:
-        return redirect(url_for('main_routes.stores'))
+        flash('Form validation error', 'error')
+        return redirect(url_for('main.stores'))
 
 
 @store_routes.route('/delete_store', methods=['POST'])
