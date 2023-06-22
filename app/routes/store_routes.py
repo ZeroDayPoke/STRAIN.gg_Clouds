@@ -5,9 +5,13 @@ from flask import Blueprint, redirect, url_for, flash, request
 from flask_login import login_required, current_user
 from ..models import db, Store, Strain
 from ..forms import AddStoreForm, UpdateStoreForm, DeleteStoreForm
+from .utils import handle_file_upload
 
 store_routes = Blueprint('store_routes', __name__, url_prefix='/stores')
 
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'JPG', 'JPEG', 'PNG', 'GIF'}
+MAX_FILE_SIZE = 1.5 * 1024 * 1024  # 1.5 MB
+UPLOAD_FOLDER='../static/images/store_images/'
 
 @store_routes.before_request
 @login_required
@@ -17,7 +21,6 @@ def requires_login():
 
 @store_routes.route('/update_store', methods=['POST'])
 def update_store():
-    form = UpdateStoreForm()
     strains = Strain.query.all()
     form = UpdateStoreForm()
     form.related_strains.choices = [
@@ -27,11 +30,11 @@ def update_store():
         store.name = form.name.data
         store.location = form.location.data
         store.operating_hours = form.operating_hours.data
-        store.related_strains = Strain.query.filter(Strain.id.in_(form.related_strains.data)).all()
+        store.related_strains = Strain.query.filter(
+            Strain.id.in_(form.related_strains.data)).all()
         db.session.commit()
         flash('Store updated successfully!', 'success')
     return redirect(url_for('main_routes.stores'))
-
 
 
 @store_routes.route('/delete_store', methods=['POST'])
@@ -67,6 +70,10 @@ def add_store():
 
     if form.validate_on_submit():
         new_store = Store()
+        image_filename = handle_file_upload(request, UPLOAD_FOLDER, ALLOWED_EXTENSIONS, MAX_FILE_SIZE)
+
+        if image_filename is not None:
+            new_store.image_filename = image_filename
         new_store.name = form.name.data
         new_store.location = form.location.data
         new_store.operating_hours = form.operating_hours.data

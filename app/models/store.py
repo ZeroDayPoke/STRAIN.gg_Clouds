@@ -9,6 +9,7 @@ class Store(BaseModel):
     location = db.Column(db.String(128), nullable=False)
     operating_hours = db.Column(db.String(128), nullable=False)
     owner_id = db.Column(db.String(60), db.ForeignKey('users.id'), nullable=False)
+    image_filename = db.Column(db.String(128))
 
     owner = db.relationship("User", back_populates="stores")
     related_strains = db.relationship("Strain", secondary=store_strains, back_populates="related_stores")

@@ -3,6 +3,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
   updateButtons.forEach((button) => {
     button.addEventListener("click", (event) => {
+      event.preventDefault();
+      debugger;
       const id = event.target.getAttribute("data-id");
       const name = event.target.getAttribute("data-name");
       const location = event.target.getAttribute("data-location");

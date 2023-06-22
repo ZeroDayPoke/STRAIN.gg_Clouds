@@ -131,6 +131,15 @@
               {% endfor %}
             </div>
           </div>
+          <div class="mb-3">
+            <label for="image" class="form-label">Store Image</label>
+            <input
+              type="file"
+              class="form-control"
+              id="image"
+              name="image"
+            />
+          </div>
           <div class="modal-footer">
             <button
               type="button"
@@ -153,7 +162,7 @@
       <div class="card">
         <div class="card-body">
           <h5 class="card-title">{{ store.name }}</h5>
-          <p> {{ store.related_strains }}</p>
+          <p>{{ store.related_strains }}</p>
           <p class="card-text">Location: {{ store.location }}</p>
           <p class="card-text">Operating Hours: {{ store.operating_hours }}</p>
           <p class="card-text">Owner ID: {{ store.owner_id }}</p>
