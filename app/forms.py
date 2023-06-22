@@ -96,7 +96,7 @@ class UpdateStoreForm(StoreForm):
     store = SelectField('Store to Update', coerce=str)
     submit = SubmitField('Update Store')
     related_strains = MultiCheckboxField(
-        'Related Strains', coerce=str, validators=[at_least_one_checkbox])
+        'Related Strains', choices=[], validators=[at_least_one_checkbox])
 
 
 class DeleteStoreForm(FlaskForm):
