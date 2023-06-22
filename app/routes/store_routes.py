@@ -17,8 +17,9 @@ def requires_login():
 
 @store_routes.route('/update_store', methods=['POST'])
 def update_store():
-    form = UpdateStoreForm(request.form)
-    if form.validate():
+    form = UpdateStoreForm()
+    form.related_strains.choices = [(s.id, s.name) for s in Strain.query.all()]
+    if form.validate_on_submit():
         id = form.id.data
         store = Store.query.get(id)
         if store:
@@ -30,9 +31,10 @@ def update_store():
             flash('Store updated successfully', 'success')
             return redirect(url_for('main.stores'))
         else:
-            flash('Store not found', 'error')
+            flash('Store not found', 'danger')
             return redirect(url_for('main.stores'))
     else:
+        print('Error: {}'.format(form.errors))
         flash('Form validation error', 'error')
         return redirect(url_for('main.stores'))
 

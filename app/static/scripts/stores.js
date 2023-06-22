@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
   updateButtons.forEach((button) => {
     button.addEventListener("click", (event) => {
-      event.preventDefault();
       const id = event.target.getAttribute("data-id");
       const name = event.target.getAttribute("data-name");
       const location = event.target.getAttribute("data-location");
@@ -19,13 +18,11 @@ document.addEventListener("DOMContentLoaded", (event) => {
       const relatedStrains = event.target
         .getAttribute("data-related-strains")
         .split(",");
-      console.log("Related strains:", relatedStrains);
-      debugger;
       const strainsSelect = form.querySelector(
         'select[name="related_strains"]'
       );
       for (let option of strainsSelect.options) {
-        if (relatedStrains.includes(option.value)) {
+        if (relatedStrains.includes(option.value.toString())) {
           option.selected = true;
         } else {
           option.selected = false;
