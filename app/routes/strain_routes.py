@@ -5,9 +5,13 @@ from flask import Blueprint, redirect, url_for, flash
 from flask_login import login_required, current_user
 from ..models import db, Strain
 from ..forms import AddStrainForm, UpdateStrainForm, DeleteStrainForm
+from .utils import handle_file_upload
 
 strain_routes = Blueprint('strain_routes', __name__, url_prefix='/strains')
 
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'JPG', 'JPEG', 'PNG', 'GIF'}
+MAX_FILE_SIZE = 1.5 * 1024 * 1024  # 1.5 MB
+UPLOAD_FOLDER='app/static/images/strain_images/'
 
 @strain_routes.before_request
 @login_required
@@ -15,8 +19,8 @@ def requires_login():
     pass
 
 
-@strain_routes.route('/update', methods=['POST'])
-def update_strain():
+@strain_routes.route('/update_strain/<id>', methods=['POST'])
+def update_strain(id):
     if not (current_user.has_role('CLOUD_CHASER') or current_user.has_role('CLOUD_PRODUCER')):
         return redirect(url_for('main_routes.index'))
     form = UpdateStrainForm()

@@ -6,53 +6,8 @@ block content %}
       <h2>Account Information</h2>
       <p><strong>Username:</strong> {{ current_user.username }}</p>
       <p><strong>Email:</strong> {{ current_user.email }}</p>
-      {% if not current_user.verified %}
-      <p>
-        Your email is not verified.
-        <a
-          href="{{ url_for('auth_routes.send_verification_email') }}"
-          class="btn btn-primary"
-          >Send Verification Email</a
-        >
-      </p>
-      {% endif %}
-    </div>
-    <div class="mt-4" id="change_password">
-      <h2>Change Password</h2>
-      <form action="{{ url_for('auth_routes.signout') }}" method="post">
-        <div class="mb-3">
-          <label for="current_password" class="form-label"
-            >Current Password</label
-          >
-          <input
-            type="password"
-            class="form-control"
-            id="current_password"
-            name="current_password"
-          />
-        </div>
-        <div class="mb-3">
-          <label for="new_password" class="form-label">New Password</label>
-          <input
-            type="password"
-            class="form-control"
-            id="new_password"
-            name="new_password"
-          />
-        </div>
-        <div class="mb-3">
-          <label for="confirm_password" class="form-label"
-            >Confirm New Password</label
-          >
-          <input
-            type="password"
-            class="form-control"
-            id="confirm_password"
-            name="confirm_password"
-          />
-        </div>
-        <button type="submit" class="btn btn-primary">Change Password</button>
-      </form>
+      <p><strong>Account Created:</strong> {{ current_user.created_at }}</p>
+      <p><strong>Last Updated:</strong> {{ current_user.updated_at }}</p>
     </div>
   </article>
 </section>

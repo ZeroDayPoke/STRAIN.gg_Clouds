@@ -43,10 +43,9 @@ def interface():
 
     add_store_form.related_strains.choices = [
         (str(strain.id), strain.name) for strain in Strain.query.all()]
-    update_store_form.store.choices = [
-        (str(store.id), store.name) for store in Store.query.all()]
     update_store_form.related_strains.choices = [
         (str(strain.id), strain.name) for strain in Strain.query.all()]
+
     delete_store_form.store.choices = [
         (str(store.id), store.name) for store in Store.query.all()]
     delete_strain_form.strain.choices = [

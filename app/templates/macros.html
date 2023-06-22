@@ -1,6 +1,6 @@
 <!-- app/templates/macros.html -->
-{% macro render_form(form, route, button_label) %}
-<form action="{{ url_for(route) }}" method="POST">
+{% macro render_form(form, route, button_label, params={}) %}
+<form action="{{ url_for(route, **params) }}" method="POST">
   {{ form.hidden_tag() }}
   {% for field in form if field.type != "SubmitField" %}
   <p>{{ field.label }} {{ field() }}</p>
@@ -11,6 +11,7 @@
   <p><input type="submit" value="{{ button_label }}" class="btn btn-primary"></p>
 </form>
 {% endmacro %}
+
 
 {% macro render_field(field, class_=None) %}
 <div class="mb-3">

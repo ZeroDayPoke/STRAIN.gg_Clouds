@@ -30,54 +30,5 @@ block content %} {% import 'macros.html' as macros %}
       </div>
     </div>
   </div>
-  <h2 class="mt-5">Store Management</h2>
-  <div class="row">
-    <div class="col-lg-4 border">
-      <h3 class="text-white">Current Stores</h3>
-      <ul>
-        {% for store in stores %}
-        <li>{{ store.name }}</li>
-        {% endfor %}
-      </ul>
-    </div>
-    <div class="col-lg-8 border">
-      <div>
-        <h3>Add Store</h3>
-        {{ macros.render_form(add_store_form, 'store_routes.add_store', 'Add Store') }}
-      </div>
-      <div>
-        <h3>Update Store</h3>
-        {{ macros.render_form(update_store_form, 'store_routes.update_store',
-        'Update Store') }}
-      </div>
-      <div>
-        <h3>Delete Store</h3>
-        {{ macros.render_form(delete_store_form, 'store_routes.delete_store',
-        'Delete Store') }}
-      </div>
-    </div>
-  </div>
-</div>
-<h2 class="mt-5">Strain Management</h2>
-<div class="row">
-  <div class="col-lg-4 border">
-    <h3 class="text-white">Current Strains</h3>
-    <ul>
-      {% for strain in strains %}
-      <li>{{ strain.name }}</li>
-      {% endfor %}
-    </ul>
-  </div>
-  <div class="col-lg-8 border">
-    <div>
-      <h3>Add Strain</h3>
-      {{ macros.render_form(add_strain_form, 'strain_routes.add_strain', 'Add Strain') }}
-    </div>
-    <div>
-      <h3>Delete Strain</h3>
-      {{ macros.render_form(delete_strain_form, 'strain_routes.delete_strain',
-      'Delete Strain') }}
-    </div>
-  </div>
 </div>
 {% endblock %}
