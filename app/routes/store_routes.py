@@ -11,7 +11,7 @@ store_routes = Blueprint('store_routes', __name__, url_prefix='/stores')
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'JPG', 'JPEG', 'PNG', 'GIF'}
 MAX_FILE_SIZE = 1.5 * 1024 * 1024  # 1.5 MB
-UPLOAD_FOLDER='../static/images/store_images/'
+UPLOAD_FOLDER='app/static/images/store_images/'
 
 @store_routes.before_request
 @login_required

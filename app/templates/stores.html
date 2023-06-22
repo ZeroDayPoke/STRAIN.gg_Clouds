@@ -103,7 +103,7 @@
             aria-label="Close"
           ></button>
         </div>
-        <form action="{{ url_for('store_routes.add_store') }}" method="post">
+        <form action="{{ url_for('store_routes.add_store') }}" method="post", enctype="multipart/form-data">
           {{ add_store_form.csrf_token }}
           <div class="modal-body">
             {{ macros.render_field(add_store_form.name, class_="form-control")
