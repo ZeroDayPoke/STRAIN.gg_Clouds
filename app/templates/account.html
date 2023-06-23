@@ -1,19 +1,14 @@
-{% extends 'base.html' %}
-
-{% block content %}
-    <h1>Account</h1>
-    <p>Email: {{ email }}</p>
-    <p>User Type: {{ role }}</p>
-    <h2>Favorite Strains</h2>
-    <ul>
-        {% for strain in favorite_strains %}
-        <li>
-          {{ strain.name }}
-          <form action="{{ url_for('web_routes.remove_favorite') }}" method="post" class="d-inline">
-            <input type="hidden" name="strain_id" value="{{ strain.id }}">
-            <button type="submit" class="btn btn-link text-danger p-0">Remove</button>
-          </form>
-        </li>
-      {% endfor %}
-    </ul>
+{% extends "base.html" %} {% block title %} Account - ZDP {% endblock %} {%
+block content %}
+<section class="row">
+  <article class="col-md-6">
+    <div class="mt-4" id="account_info">
+      <h2>Account Information</h2>
+      <p><strong>Username:</strong> {{ current_user.username }}</p>
+      <p><strong>Email:</strong> {{ current_user.email }}</p>
+      <p><strong>Account Created:</strong> {{ current_user.created_at }}</p>
+      <p><strong>Last Updated:</strong> {{ current_user.updated_at }}</p>
+    </div>
+  </article>
+</section>
 {% endblock %}

@@ -1,20 +1,23 @@
 #!/usr/bin/python3
 """Store Model"""
-from sqlalchemy import Column, String, ForeignKey
-from sqlalchemy.orm import relationship
-from .base import BaseModel
+from .base import BaseModel, db
+from .associations import store_strains
 
 class Store(BaseModel):
     __tablename__ = "stores"
-    name = Column(String(128), nullable=False)
-    location = Column(String(128), nullable=False)
-    operating_hours = Column(String(128), nullable=False)
-    owner_id = Column(String(60), ForeignKey('users.id'), nullable=False)
+    name = db.Column(db.String(128), nullable=False)
+    location = db.Column(db.String(128), nullable=False)
+    operating_hours = db.Column(db.String(128), nullable=False)
+    owner_id = db.Column(db.String(60), db.ForeignKey('users.id'), nullable=False)
+    image_filename = db.Column(db.String(128))
 
-    owner = relationship("User", back_populates="stores")
-    strains = relationship("Strain", secondary="strain_store", back_populates="stores")
+    owner = db.relationship("User", back_populates="stores")
+    related_strains = db.relationship("Strain", secondary=store_strains, back_populates="related_stores")
 
     def add_strain(self, strain_obj):
         """Add a strain to the store"""
-        if strain_obj not in self.strains:
-            self.strains.append(strain_obj)
+        if strain_obj not in self.related_strains:
+            self.related_strains.append(strain_obj)
+
+    def __repr__(self):
+        return f"<Store (ID: {self.id}, Name: {self.name})>"

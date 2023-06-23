@@ -2,3 +2,5 @@
 *.tar.gz
 backup.sql
 app/static/images/strain_images/*
+app/static/images/store_images/*
+.env

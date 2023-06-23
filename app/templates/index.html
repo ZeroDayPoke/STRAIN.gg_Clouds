@@ -7,10 +7,10 @@
 {% block content %}
 	<h1>Index</h1>
 	<p>Index page</p>
-	{% if user_role == "CLOUD_CHASER" %}
+	{% if current_user.is_authenticated and current_user.has_role("CLOUD_CHASER") %}
 	<h1>UWU FAM - TIME TO GET THOSE COINS</h1>
 	<p>TO NAVIGATE TO THE PRESENTATION, CLICK THE PRESENTATION LINK BELOW
 	OR CLICK THE PRESENTATION LINK IN THE NAVBAR</p>
-	<a href="{{ url_for('web_routes.presentation') }}">Presentation</a>
+	<a href="{{ url_for('admin_routes.presentation') }}">Presentation</a>
 	{% endif %}
 {% endblock %}

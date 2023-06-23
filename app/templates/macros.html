@@ -1,0 +1,26 @@
+<!-- app/templates/macros.html -->
+{% macro render_form(form, route, button_label, params={}) %}
+<form action="{{ url_for(route, **params) }}" method="POST">
+  {{ form.hidden_tag() }}
+  {% for field in form if field.type != "SubmitField" %}
+  <p>{{ field.label }} {{ field() }}</p>
+  {% if field.errors %}
+  <p class="error">{{ field.errors[0] }}</p>
+  {% endif %}
+  {% endfor %}
+  <p><input type="submit" value="{{ button_label }}" class="btn btn-primary"></p>
+</form>
+{% endmacro %}
+
+
+{% macro render_field(field, class_=None, value=None) %}
+<div class="mb-3">
+  {{ field.label(class_="form-label") }}
+  {{ field(class_=class_, value=value) }}
+  {% if field.errors %}
+  <div class="invalid-feedback">
+    {{ field.errors[0] }}
+  </div>
+  {% endif %}
+</div>
+{% endmacro %}
