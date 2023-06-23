@@ -1,0 +1,16 @@
+body {
+  padding-top: 70px;
+}
+
+.navbar-nav {
+  justify-content: space-around; /* Makes items distribute evenly across the width of the navbar */
+}
+
+.nav-item {
+  flex-grow: 1; /* Makes each nav item take up as much space as possible */
+  text-align: center; /* Centers the text in each nav item */
+}
+
+.nav-link {
+  font-size: 1.5rem; /* Makes the text of each nav link larger */
+}
