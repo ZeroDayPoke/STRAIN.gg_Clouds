@@ -10,12 +10,12 @@ from .routes import main_routes, store_routes, strain_routes, user_routes, auth_
 def create_app(config_name='default'):
     app = Flask(__name__)
     app.config.from_object(config[config_name])
-    app.register_blueprint(main_routes)
-    app.register_blueprint(store_routes)
-    app.register_blueprint(strain_routes)
-    app.register_blueprint(admin_routes)
-    app.register_blueprint(auth_routes)
-    app.register_blueprint(user_routes)
+    app.register_blueprint(main_routes, url_prefix='/clouds/')
+    app.register_blueprint(store_routes, url_prefix='/clouds/')
+    app.register_blueprint(strain_routes, url_prefix='/clouds/')
+    app.register_blueprint(admin_routes, url_prefix='/clouds/')
+    app.register_blueprint(auth_routes, url_prefix='/clouds/')
+    app.register_blueprint(user_routes, url_prefix='/clouds/')
     app.url_map.strict_slashes = False
     login_manager = LoginManager()
     login_manager.init_app(app)
