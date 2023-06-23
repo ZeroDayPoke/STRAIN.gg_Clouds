@@ -2,8 +2,7 @@
 {% import 'macros.html' as macros %}
 <div class="container">
   <h1 class="mt-5">Strains</h1>
-  {% if current_user.has_role('CLOUD_CHASER') or
-  current_user.has_role('CLOUD_CULTIVATOR') %}
+  {% if current_user.is_authenticated and (current_user.has_role('CLOUD_CHASER') or current_user.has_role('CLOUD_CULTIVATOR')) %}
   <!-- Create Strain Button -->
   <button
     type="button"
@@ -276,8 +275,7 @@
               {% endfor %}
             </ul>
           </div>
-          {% if current_user.has_role('CLOUD_CHASER') or
-          current_user.has_role('CLOUD_CULTIVATOR') %}
+          {% if current_user.is_authenticated and (current_user.has_role('CLOUD_CHASER') or current_user.has_role('CLOUD_CULTIVATOR')) %}
           <!-- Delete and Update buttons -->
           <button
             class="btn btn-danger"

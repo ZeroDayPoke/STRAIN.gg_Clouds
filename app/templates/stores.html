@@ -4,8 +4,7 @@
 <div class="container">
   <h1 class="mt-5">Stores</h1>
 
-  {% if current_user.has_role('CLOUD_CHASER') or
-  current_user.has_role('CLOUD_VENDOR') %}
+  {% if current_user.is_authenticated and (current_user.has_role('CLOUD_CHASER') or current_user.has_role('CLOUD_CARRIER')) %}
   <!-- Create Store Button -->
   <button
     type="button"
@@ -247,9 +246,7 @@
               {% endfor %}
             </ul>
           </div>
-
-          {% if current_user.id == store.owner_id or current_user.role ==
-          'CLOUD_CHASER' %}
+          {% if current_user.is_authenticated and (current_user.has_role('CLOUD_CHASER') or current_user.id == store.owner_id) %}
           <!-- Delete and Update buttons -->
           <button
             class="btn btn-danger"

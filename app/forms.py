@@ -42,7 +42,7 @@ class SignupForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     role = SelectField('Role', choices=[('CLOUD_CONSUMER', 'Cloud Consumer'), (
-        'CLOUD_PRODUCER', 'Cloud Producer'), ('CLOUD_VENDOR', 'Cloud Vendor')], validators=[DataRequired()])
+        'CLOUD_CULTIVATOR', 'Cloud Cultivator'), ('CLOUD_CARRIER', 'Cloud Carrier')], validators=[DataRequired()])
     submit = SubmitField('Sign Up')
 
     def validate_username(self, username):
@@ -114,7 +114,7 @@ class UserForm(ModelForm):
 
 class AddUserForm(UserForm):
     role = SelectField('Role', choices=[('CLOUD_CONSUMER', 'Cloud Consumer'), (
-        'CLOUD_PRODUCER', 'Cloud Producer'), ('CLOUD_VENDOR', 'Cloud Vendor')], validators=[DataRequired()])
+        'CLOUD_CULTIVATOR', 'Cloud Cultivator'), ('CLOUD_CARRIER', 'Cloud Carrier')], validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password', validators=[
                                      DataRequired(), EqualTo('password')])
@@ -127,7 +127,7 @@ class UpdateUserForm(UserForm):
     confirm_password = PasswordField('Confirm Password', validators=[
                                      DataRequired(), EqualTo('password')])
     role = SelectField('Role', choices=[('CLOUD_CONSUMER', 'Cloud Consumer'), (
-        'CLOUD_PRODUCER', 'Cloud Producer'), ('CLOUD_VENDOR', 'Cloud Vendor')], validators=[DataRequired()])
+        'CLOUD_CULTIVATOR', 'Cloud Cultivator'), ('CLOUD_CARRIER', 'Cloud Carrier')], validators=[DataRequired()])
     submit = SubmitField('Update User')
 
 
