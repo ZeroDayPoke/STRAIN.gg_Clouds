@@ -216,12 +216,13 @@
             </div>
           </div>
         </div>
-
+        {% if store.image_filename %}
         <img
           src="{{ url_for('static', filename='images/store_images/' + store.image_filename) }}"
           class="card-img-top"
           alt="Store Image"
         />
+        {% endif %}
         <div class="card-body">
           <h5 class="card-title">{{ store.name }}</h5>
           <p>{{ store.related_strains }}</p>

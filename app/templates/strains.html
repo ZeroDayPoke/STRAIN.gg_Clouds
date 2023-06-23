@@ -1,9 +1,9 @@
-{% extends "base.html" %} 
+{% extends "base.html" %} {% block script %} {% endblock %}{% block content %}
 {% import 'macros.html' as macros %}
-
-{% block content %}
 <div class="container">
   <h1 class="mt-5">Strains</h1>
+  {% if current_user.has_role('CLOUD_CHASER') or
+  current_user.has_role('CLOUD_CULTIVATOR') %}
   <!-- Create Strain Button -->
   <button
     type="button"
@@ -32,68 +32,268 @@
             aria-label="Close"
           ></button>
         </div>
-        <div class="modal-body">
-          {{ macros.render_form(add_strain_form, 'strain_routes.add_strain', 'Create Strain') }}
-        </div>
+        <form
+          action="{{ url_for('strain_routes.add_strain') }}"
+          method="post"
+          enctype="multipart/form-data"
+        >
+          {{ add_strain_form.csrf_token }}
+          <div class="modal-body">
+            {{ macros.render_field(add_strain_form.name, class_="form-control")
+            }} {{ macros.render_field(add_strain_form.cbd_concentration,
+            class_="form-control") }} {{
+            macros.render_field(add_strain_form.thc_concentration,
+            class_="form-control") }}
+            <div class="mb-3">
+              <label for="related_stores" class="form-label"
+                >Related Stores</label
+              >
+              {% for id, name in add_strain_form.related_stores.choices %}
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value="{{ id }}"
+                  id="related_stores{{ id }}"
+                  name="related_stores"
+                />
+                <label class="form-check-label" for="related_stores{{ id }}"
+                  >{{ name }}</label
+                >
+              </div>
+              {% endfor %}
+              <div class="mb-3">
+                <label for="subtype" class="form-label">Subtype</label>
+                <select class="form-select" id="subtype" name="subtype">
+                  <option selected disabled>Choose...</option>
+                  <option value="Indica">Indica</option>
+                  <option value="Sativa">Sativa</option>
+                  <option value="Hybrid">Hybrid</option>
+                  <option value="Unknown">Unknown</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="image" class="form-label">Strain Image</label>
+            <input type="file" class="form-control" id="image" name="image" />
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">Create Strain</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
+  {% endif %}
   <div class="row">
     {% for strain in strains %}
     <div class="col-lg-4 mb-4">
       <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">{{ strain.name }}</h5>
-          <button
-            class="btn btn-danger"
-            data-bs-toggle="modal"
-            data-bs-target="#deleteModal{{ strain.id }}"
-          >
-            Delete
-          </button>
-        </div>
-      </div>
-      <!-- Delete confirmation modal -->
-      <div
-        class="modal fade"
-        id="deleteModal{{ strain.id }}"
-        tabindex="-1"
-        aria-labelledby="deleteModalLabel{{ strain.id }}"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="deleteModalLabel{{ strain.id }}">
-                Confirm Delete
-              </h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div class="modal-body">
-              Are you sure you want to delete {{ strain.name }}?
-            </div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Cancel
-              </button>
+        <!-- Update Strain Modal -->
+        <div
+          class="modal fade"
+          id="updateStrainModal{{ strain.id }}"
+          tabindex="-1"
+          aria-labelledby="updateStrainModalLabel{{ strain.id }}"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5
+                  class="modal-title"
+                  id="updateStrainModalLabel{{ strain.id }}"
+                >
+                  Update Strain
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
               <form
-                action="{{ url_for('strain_routes.delete_strain', strain_id=strain.id) }}"
+                action="{{ url_for('strain_routes.update_strain', id=strain.id) }}"
                 method="post"
+                enctype="multipart/form-data"
               >
-                <input type="hidden" name="_method" value="DELETE" />
-                <input type="submit" class="btn btn-danger" value="Delete" />
+                {{ update_strain_form.csrf_token }}
+                <div class="modal-body">
+                  {{ macros.render_field(update_strain_form.name,
+                    class_="form-control", value=strain.name) }} {{
+                    macros.render_field(update_strain_form.subtype,
+                    class_="form-control", value=strain.subtype) }} {{
+                    macros.render_field(update_strain_form.thc_concentration,
+                    class_="form-control", value=strain.thc_concentration) }} {{
+                    macros.render_field(update_strain_form.cbd_concentration,
+                    class_="form-control", value=strain.cbd_concentration) }}
+                  <div class="mb-3">
+                    <label for="related_stores" class="form-label"
+                      >Related Stores</label
+                    >
+                    {% set related_store_ids = strain.related_stores|map(attribute='id')|list %}
+                    {% for id, name in update_strain_form.related_stores.choices %}
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        value="{{ id }}"
+                        id="related_stores{{ id }}"
+                        name="related_stores"
+                        {% if id in related_store_ids %}checked{% endif %}
+                      />
+                      <label
+                        class="form-check-label"
+                        for="related_stores{{ id }}"
+                        >{{ name }}</label
+                      >
+                    </div>
+                    {% endfor %}
+                    <div class="mb-3">
+                      <label for="subtype" class="form-label">Subtype</label>
+                      <select class="form-select" id="subtype" name="subtype">
+                        <option selected disabled>Choose...</option>
+                        <option value="Indica" {% if strain.subtype == 'Indica' %}selected{% endif %}>Indica</option>
+                        <option value="Sativa" {% if strain.subtype == 'Sativa' %}selected{% endif %}>Sativa</option>
+                        <option value="Hybrid" {% if strain.subtype == 'Hybrid' %}selected{% endif %}>Hybrid</option>
+                        <option value="Unknown" {% if strain.subtype == 'Unknown' %}selected{% endif %}>Unknown</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="image" class="form-label">Strain Image</label>
+                    <input
+                      type="file"
+                      class="form-control"
+                      id="image"
+                      name="image"
+                    />
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                  >
+                    Cancel
+                  </button>
+                  <button type="submit" class="btn btn-primary">
+                    Update Strain
+                  </button>
+                </div>
               </form>
             </div>
           </div>
+        </div>
+
+        <!-- Delete Strain Confirmation Modal -->
+        <div
+          class="modal fade"
+          id="deleteStrainModal{{ strain.id }}"
+          tabindex="-1"
+          aria-labelledby="deleteStrainModalLabel{{ strain.id }}"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5
+                  class="modal-title"
+                  id="deleteStrainModalLabel{{ strain.id }}"
+                >
+                  Confirm Delete
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                Are you sure you want to delete {{ strain.name }}?
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Cancel
+                </button>
+                <form
+                  action="{{ url_for('strain_routes.delete_strain', id=strain.id) }}"
+                  method="post"
+                >
+                  <input type="hidden" name="_method" value="DELETE" />
+                  <input type="submit" class="btn btn-danger" value="Delete" />
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% if strain.image_filename %}
+        <img
+          src="{{ url_for('static', filename='images/strain_images/' + strain.image_filename) }}"
+          class="card-img-top"
+          alt="Strain Image"
+        />
+        {% endif %}
+        <div class="card-body">
+          <h5 class="card-title">{{ strain.name }}</h5>
+          <p class="card-text">Subtype: {{ strain.subtype }}</p>
+          <p class="card-text">
+            THC Concentration: {{ strain.thc_concentration }}
+          </p>
+          <p class="card-text">
+            CBD Concentration: {{ strain.cbd_concentration }}
+          </p>
+
+          <!-- Dropdown list of related stores -->
+          <div class="dropdown">
+            <button
+              class="btn btn-secondary dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Related Stores
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              {% for store in strain.related_stores %}
+              <li><a class="dropdown-item" href="#">{{ store.name }}</a></li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% if current_user.has_role('CLOUD_CHASER') or
+          current_user.has_role('CLOUD_CULTIVATOR') %}
+          <!-- Delete and Update buttons -->
+          <button
+            class="btn btn-danger"
+            data-bs-toggle="modal"
+            data-bs-target="#deleteStrainModal{{ strain.id }}"
+          >
+            Delete
+          </button>
+          <button
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#updateStrainModal{{ strain.id }}"
+          >
+            Update
+          </button>
+          {% endif %}
         </div>
       </div>
     </div>

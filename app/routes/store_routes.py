@@ -11,7 +11,8 @@ store_routes = Blueprint('store_routes', __name__, url_prefix='/stores')
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'JPG', 'JPEG', 'PNG', 'GIF'}
 MAX_FILE_SIZE = 1.5 * 1024 * 1024  # 1.5 MB
-UPLOAD_FOLDER='app/static/images/store_images/'
+UPLOAD_FOLDER = 'app/static/images/store_images/'
+
 
 @store_routes.before_request
 @login_required
@@ -21,7 +22,7 @@ def requires_login():
 
 @store_routes.route('/update_store/<id>', methods=['POST'])
 def update_store(id):
-    if not current_user.has_role('CLOUD_CHASER'):
+    if not (current_user.has_role('CLOUD_CHASER') or current_user.has_role('CLOUD_CARRIER')):
         return redirect(url_for('main_routes.index'))
 
     strains = Strain.query.all()
@@ -30,7 +31,8 @@ def update_store(id):
         (strain.id, strain.name) for strain in strains]
     if form.validate_on_submit():
         store = Store.query.get(id)
-        image_filename = handle_file_upload(request, UPLOAD_FOLDER, ALLOWED_EXTENSIONS, MAX_FILE_SIZE)
+        image_filename = handle_file_upload(
+            request, UPLOAD_FOLDER, ALLOWED_EXTENSIONS, MAX_FILE_SIZE)
         if image_filename is not None:
             store.image_filename = image_filename
         store.name = form.name.data
@@ -44,30 +46,23 @@ def update_store(id):
     return redirect(url_for('main_routes.stores'))
 
 
-@store_routes.route('/delete_store', methods=['POST'])
-def delete_store():
-    if not current_user.has_role('CLOUD_CHASER'):
+@store_routes.route('/delete_store/<store_id>', methods=['POST'])
+def delete_store(store_id):
+    if not (current_user.has_role('CLOUD_CHASER') or current_user.has_role('CLOUD_CARRIER')):
         return redirect(url_for('main_routes.index'))
-    form = DeleteStoreForm()
-    form.store.choices = [(str(store.id), store.name)
-                          for store in Store.query.all()]
-    if form.validate_on_submit():
-        store_to_delete = Store.query.get(form.store.data)
-        if store_to_delete:
-            db.session.delete(store_to_delete)
-            db.session.commit()
-            flash('Store has been deleted!', 'success')
-        else:
-            flash('Error: Store not found.', 'danger')
-    if current_user.has_role('CLOUD_CHASER'):
-        return redirect(url_for('admin_routes.interface'))
+    store_to_delete = Store.query.get(store_id)
+    if store_to_delete:
+        db.session.delete(store_to_delete)
+        db.session.commit()
+        flash('Store has been deleted!', 'success')
     else:
-        return redirect(url_for('main_routes.stores'))
+        flash('Error: Store not found.', 'danger')
+    return redirect(url_for('main_routes.stores'))
 
 
 @store_routes.route('/add_store', methods=['POST'])
 def add_store():
-    if not current_user.has_role('CLOUD_CHASER'):
+    if not (current_user.has_role('CLOUD_CHASER') or current_user.has_role('CLOUD_CARRIER')):
         return redirect(url_for('main_routes.index'))
 
     strains = Strain.query.all()
@@ -77,7 +72,8 @@ def add_store():
 
     if form.validate_on_submit():
         new_store = Store()
-        image_filename = handle_file_upload(request, UPLOAD_FOLDER, ALLOWED_EXTENSIONS, MAX_FILE_SIZE)
+        image_filename = handle_file_upload(
+            request, UPLOAD_FOLDER, ALLOWED_EXTENSIONS, MAX_FILE_SIZE)
 
         if image_filename is not None:
             new_store.image_filename = image_filename
@@ -94,9 +90,6 @@ def add_store():
         db.session.commit()
         flash('Your store has been added!', 'success')
     else:
-        print(form.errors)
         flash('Error: Store not added.', 'danger')
-    if current_user.has_role('CLOUD_CHASER'):
-        return redirect(url_for('admin_routes.interface'))
-    else:
-        return redirect(url_for('main_routes.stores'))
+
+    return redirect(url_for('main_routes.stores'))

@@ -69,11 +69,14 @@ class StrainForm(ModelForm):
 
 class AddStrainForm(StrainForm):
     submit = SubmitField('Add Strain')
+    related_stores = MultiCheckboxField(
+        'Related Stores', choices=[])
 
 
 class UpdateStrainForm(StrainForm):
-    strain = SelectField('Strain to Update', coerce=str)
     submit = SubmitField('Update Strain')
+    related_stores = MultiCheckboxField(
+        'Related Stores', choices=[], validators=[at_least_one_checkbox])
 
 
 class DeleteStrainForm(FlaskForm):
