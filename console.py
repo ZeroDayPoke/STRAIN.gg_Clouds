@@ -21,7 +21,7 @@ class_dictionary = {
 }
 
 class Strain_Console(cmd.Cmd):
-    prompt = '(cv_app) '
+    prompt = '(straingg_app) '
 
     def get_class(self, class_name):
         return class_dictionary.get(class_name)
